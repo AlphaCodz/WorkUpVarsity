@@ -17,10 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include  # Import include
 from rest_framework import routers
-from main_app.views import SignUpStudent
+from main_app.views import SignUpStudent, SignUpInstructor
 
 router = routers.DefaultRouter()
 router.register("signup", SignUpStudent, basename="signup-student")  # Removed the trailing slash in the route
+router.register("reg/instructor", SignUpInstructor, basename="signup-instructor")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

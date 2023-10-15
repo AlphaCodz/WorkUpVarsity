@@ -31,5 +31,30 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
       return student
 
          
-class SignInStudent(serializers.ModelSerializer):
-   pass
+class SignUpInstructorSerializer(serializers.ModelSerializer):
+   class Meta:
+      model = MainUser
+      fields = ["full_name", "email", "username", "password", "contact", "street_address", "city", "state", "country", "linkedin_profile", "years_of_experience", "area_of_interest", "about_me"]
+      read_only_fields = ["id"]
+
+   def validate_password(self, value):
+      # Password Security
+      if not re.match(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).+$', value):
+         raise serializers.ValidationError("Passwords must include at least one special symbol, one number, one lowercase letter, and one uppercase letter.")
+      return value
+
+   def create(self, validated_data):
+      password = validated_data.get('password')
+      
+      # Validate password using the validate_password method
+      self.validate_password(password)
+      
+      # Assign student to DB
+      instructor = MainUser(**validated_data)
+      instructor.is_instructor = True 
+      
+      # Use set_password to hash the password
+      instructor.set_password(password)
+      
+      instructor.save()  # Save student data after setting password
+      return instructor
