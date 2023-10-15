@@ -94,9 +94,21 @@ WSGI_APPLICATION = 'varsity.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'PGUSER': env('PGUSER'),
+        'PGHOST': env('PGHOST'),
+        'NAME': env('PGDATABASE'),
+        'PGPORT': env('PGPORT'),
+        'PGPASSWORD': env('PGPASSWORD'),
     }
+    #     'CONN_MAX_AGE': 600,  # Set a reasonable connection timeout (in seconds)
+    #     'OPTIONS': {
+    #         'isolation_level': 'psycopg2.extensions.ISOLATION_LEVEL_READ_COMMITTED',
+    #         'client_encoding': 'UTF8',
+    #         'sslmode': 'require',
+    #     },
+    #     'POOL_SIZE': 20,
+    # },
 }
 
 
