@@ -21,7 +21,7 @@ class MainUser(AbstractUser):
    EXPERIENCE_LEVEL = (
       ('None', 'None'),
       ('1 Year', '1 Year'),
-      ('3 years', '3 Years'),
+      ('3 Years', '3 Years'),
       ('5 Years', '5 Years'),
       ('7 Years and above', '7 Years and above')
    )
