@@ -167,6 +167,10 @@ AUTH_USER_MODEL = "main_app.MainUser"
 
 CORS_ORIGIN_ALLOW_ALL=True
 
+CORS_ALLOW_ORIGIN = [
+    "http://localhost:5173"
+]
+
 CORS_ALLOW_METHODS = [
     "DELETE",
     "GET",
