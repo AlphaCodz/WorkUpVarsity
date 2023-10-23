@@ -8,7 +8,7 @@ from .models import Course, Content, Topic, CourseReview
 class CreateCourse(ModelViewSet):
    queryset = Course.objects.select_related('category', 'instructor')
    serializer_class = CourseSerializers
-   
+
 
 class CreateCourseContent(ModelViewSet):
    queryset = Content.objects.prefetch_related('topic')
@@ -23,4 +23,3 @@ class CreateCourseTopic(ModelViewSet):
 class ReviewCourse(ModelViewSet):
    queryset = CourseReview.objects.select_related('course', 'student')
    serializer_class = CourseReviewSerialiazer
-   

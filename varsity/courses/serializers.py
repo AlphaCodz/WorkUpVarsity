@@ -9,6 +9,12 @@ class CourseReviewSerialiazer(serializers.ModelSerializer):
       model = CourseReview
       fields = "__all__"
       
+   def to_representation(self, instance):
+      representation = super().to_representation(instance)
+      representation['course'] = {"id": instance.course.id, "name":instance.course.name}
+      representation['student'] = {"id": instance.student.id, "name": instance.student.full_name}
+      return representation
+      
       
 class CourseSerializers(serializers.ModelSerializer):
    ratings = CourseReviewSerialiazer(many=True, read_only=True)
