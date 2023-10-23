@@ -6,7 +6,6 @@ from cloudinary_storage.storage import RawMediaCloudinaryStorage
 # Create your models here.
 
 class Course(models.Model):
-   
    DIFFICULTY = (
       ('Beginner', 'Beginner'),
       ('Intermediate', 'Intermediate'),
@@ -68,3 +67,14 @@ class Content(models.Model):
    name = models.CharField(max_length=50, null=True)
    topic = models.ManyToManyField(Topic)
    video = models.FileField(storage=RawMediaCloudinaryStorage)
+   
+   
+class CourseReview(models.Model):
+   course = models.ForeignKey(Course, on_delete=models.CASCADE)
+   student = models.OneToOneField(MainUser, on_delete=models.CASCADE)
+   comment = models.TextField()
+   rating = models.IntegerField()
+   
+   def __str__(self):
+      return self.student
+
