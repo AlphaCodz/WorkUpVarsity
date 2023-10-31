@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 import random, string, uuid
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
 
 
 # Create your models here.
@@ -50,10 +51,8 @@ class MainUser(AbstractUser):
    city = models.CharField(max_length=15, null=True)
    state = models.CharField(max_length=20, null=True)
    country = models.CharField(max_length=25, null=True)
-   
-   # passport = models.FieldFile() #TODO Add Cloudinary Storage here for instructor passport
-   # resume = models.FieldFile() #TODO Add Cloudinary storage here for resume upload
-   
+   passport = models.FileField(storage=RawMediaCloudinaryStorage, null=True)
+   resume = models.FileField(storage=RawMediaCloudinaryStorage, null=True) 
    years_of_experience = models.CharField(max_length=17, choices=EXPERIENCE_LEVEL, null=True)
    linkedin_profile = models.URLField(null=True)
    area_of_interest = models.CharField(max_length=35, choices=AOE, null=True)
