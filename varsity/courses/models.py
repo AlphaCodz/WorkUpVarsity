@@ -78,3 +78,13 @@ class CourseReview(models.Model):
    def __str__(self):
       return self.student
 
+
+class CourseOwnership(models.Model):
+   student = models.ForeignKey(MainUser, on_delete=models.CASCADE)
+   course = models.ForeignKey(Course, on_delete=models.CASCADE)
+   purchase_date = models.DateTimeField(auto_now_add=True)
+   transaction_details = models.TextField()
+
+   def __str__(self):
+      return f"{self.user.username} - {self.course.name} Ownership"
+

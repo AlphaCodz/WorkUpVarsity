@@ -3,6 +3,9 @@ from main_app.models import MainUser
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404, Http404
 import logging
+from .models import CourseOwnership
+from datetime import datetime
+
 
 class CourseReviewSerialiazer(serializers.ModelSerializer):
    class Meta:
@@ -70,3 +73,19 @@ class ContentSerializer(serializers.ModelSerializer):
       representation = super().to_representation(instance)
       representation['topic'] = [{"id": topic.id, "name": topic.name} for topic in instance.topic.all()]
       return representation
+
+
+class CourseOwnerShipSerializer(serializers.ModelSerializer):
+   student = serializers.SerializerMethodField()
+   course = serializers.SerializerMethodField()
+   purchase_date = serializers.DateTimeField(format="%H:%M%p %Y-%m-%d")
+
+   class Meta:
+      model = CourseOwnership
+      fields = ['student', 'course', 'purchase_date', 'transaction_details']
+
+   def get_student(self, obj):
+      return {"full_name": obj.student.full_name, "id": obj.student.id}
+   
+   def get_course(self, obj):
+      return {"id": obj.course.id, "name": obj.course.name}
