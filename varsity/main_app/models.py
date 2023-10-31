@@ -45,6 +45,12 @@ class MainUser(AbstractUser):
       ('Digital/Affiliate Marketing', 'Digital/Affiliate Marketing'),
       ('Other', 'Other')
    )
+   
+   TYPE = (
+      ('Skilled', 'Skilled'),
+      ('UnSkilled', 'UnSkilled')
+   )
+   
    title = models.CharField(max_length=4, choices=TITLE, null=True)
    contact = models.CharField(max_length=11, unique=True, null=True)
    street_address = models.CharField(max_length=20, null=True)
@@ -58,6 +64,7 @@ class MainUser(AbstractUser):
    area_of_interest = models.CharField(max_length=35, choices=AOE, null=True)
    about_me = models.TextField(null=True)
    is_instructor = models.BooleanField(default=False)
+   course_type = models.CharField(choices=TYPE, max_length=9, null=True)
    
    EMAIL_FIELD = 'email'
    REQUIRED_FIELDS = []

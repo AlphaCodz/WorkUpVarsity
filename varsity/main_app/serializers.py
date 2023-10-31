@@ -35,7 +35,8 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
    # full name,last name, email,username,years of experience,country,city,contact
    class Meta:
       model = MainUser
-      fields = ["id", "full_name", "email", "username", "password", "contact", "street_address", "city", "state", "country", "linkedin_profile", "years_of_experience", "area_of_interest", "about_me", "resume", "passport"]
+      fields = ["id", "full_name", "email", "username", "password", "contact", "street_address", "city", "state", "country", "linkedin_profile", "years_of_experience", "area_of_interest", "about_me", "resume", "passport", "course_type"]
+      
       read_only_fields = ["id"]
       extra_kwargs = {
             'full_name': {'required': True},
@@ -54,9 +55,9 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
             'area_of_interest': {'required': False},
             'about_me': {'required': False},
             'resume': {'required': False},
-            'password': {'required': False}
+            'password': {'required': False},
+            'course_type': {'required': False}
       }
-
 
    def validate_password(self, value):
       # Password Security
