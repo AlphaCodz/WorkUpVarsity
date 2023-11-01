@@ -24,7 +24,7 @@ class CourseSerializers(serializers.ModelSerializer):
    
    class Meta:
       model = Course
-      fields = ['id', 'name', 'description', 'requirements', 'learning_materials', 'instructor', 'category', 'price', 'public_course', 'q_and_a', 'charge_status', 'course_thumbnail', 'ratings']
+      fields = ['id', 'name', 'description', 'requirements', 'learning_materials', 'instructor', 'category', 'price', 'public_course', 'q_and_a', 'charge_status', 'course_thumbnail', 'ratings', 'course_type']
       
    def validate(self, attrs):
       category = attrs.get('category')
