@@ -66,9 +66,3 @@ class MainUser(AbstractUser):
    
    def __str__(self):
       return self.username
-
-   # def save(self, *args, **kwargs):
-   #    if not self.username:
-   #       new_username = "".join(random.choices(string.ascii_lowercase + string.digits, k=7))
-   #       self.username = new_username
-   #    super().save(*args, **kwargs)

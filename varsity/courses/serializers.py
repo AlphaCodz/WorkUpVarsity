@@ -73,6 +73,12 @@ class ContentSerializer(serializers.ModelSerializer):
       representation = super().to_representation(instance)
       representation['topic'] = [{"id": topic.id, "name": topic.name} for topic in instance.topic.all()]
       return representation
+   
+
+class CategorySerializer(serializers.ModelSerializer):
+   class Meta:
+      model= Category
+      fields = "__all__"
 
 
 class CourseOwnerShipSerializer(serializers.ModelSerializer):
