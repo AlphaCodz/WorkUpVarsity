@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include  # Import include
 from rest_framework import routers
 from main_app.views import SignUpStudent, SignUpInstructor
-from courses.views import CreateCourse, CreateCourseContent, CreateCourseTopic, ReviewCourse, CourseOwnerShipView, CreateCourseCategory
+from courses.views import CreateCourse, CreateCourseContent, CreateCourseTopic, ReviewCourse, CourseOwnerShipView, CreateCourseCategory, CourseQuestion, CourseQuestionReply
 
 router = routers.DefaultRouter() 
 router.register("signup", SignUpStudent, basename="signup-student")
@@ -13,6 +13,8 @@ router.register("create/topic", CreateCourseTopic, basename="topic")
 router.register("review", ReviewCourse, basename="review")
 router.register("create/category", CreateCourseCategory, basename="create-category")
 router.register("add/course", CourseOwnerShipView, basename="course-ownership")
+router.register("ask/question", CourseQuestion, basename='question')
+router.register("reply", CourseQuestionReply, basename="reply")
 
 
 urlpatterns = [

@@ -3,7 +3,7 @@ from main_app.models import MainUser
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404, Http404
 import logging
-from .models import CourseOwnership
+from .models import CourseOwnership, Question, Reply
 from datetime import datetime
 
 
@@ -95,3 +95,31 @@ class CourseOwnerShipSerializer(serializers.ModelSerializer):
    
    def get_course(self, obj):
       return {"id": obj.course.id, "name": obj.course.name}
+   
+# Q & A 
+class QuestionSerializer(serializers.ModelSerializer):
+   class Meta:
+      model = Question
+      fields = "__all__"
+   
+   def to_representation(self, instance):
+      representation = super(QuestionSerializer, self).to_representation(instance)
+      representation['question'] = instance.text
+      representation['course'] = instance.course.name
+      representation['user'] = instance.user.full_name
+      return representation
+      
+
+class ReplySerializer(serializers.ModelSerializer):
+   class Meta:
+      model = Reply
+      fields = "__all__"
+      
+   def to_representation(self, instance):
+      representation = super(ReplySerializer, self).to_representation(instance)
+      representation['question'] = {"id": instance.question.id, "text": instance.question.text}
+      representation['text'] = instance.text
+      representation['user'] = instance.user.full_name
+      return representation
+      
+   

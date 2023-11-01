@@ -93,4 +93,21 @@ class CourseOwnership(models.Model):
 
    def __str__(self):
       return f"{self.user.username} - {self.course.name} Ownership"
+   
+   
+class Question(models.Model):
+   user = models.ForeignKey(MainUser, on_delete=models.CASCADE)
+   course = models.ForeignKey(Course, on_delete=models.CASCADE)
+   text = models.TextField()
+   
+   def __str__(self):
+      return self.user.full_name
+   
+   
+class Reply(models.Model):
+   question=models.ForeignKey(Question, on_delete=models.CASCADE)
+   user = models.ForeignKey(MainUser, on_delete=models.CASCADE)
+   text = models.TextField(null=True)
 
+   def __str__(self):
+      return self.user.username

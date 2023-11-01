@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from .serializers import CourseSerializers, ContentSerializer, TopicSerializer, CourseReviewSerialiazer, CourseOwnerShipSerializer, CategorySerializer
+from .serializers import CourseSerializers, ContentSerializer, TopicSerializer, CourseReviewSerialiazer, CourseOwnerShipSerializer, CategorySerializer, QuestionSerializer, ReplySerializer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .models import Course, Content, Topic, CourseReview, CourseOwnership, Category
+from .models import Course, Content, Topic, CourseReview, CourseOwnership, Category, Question, Reply
 from rest_framework import status
 
 # Create your views here.
@@ -34,3 +34,13 @@ class CourseOwnerShipView(ModelViewSet):
 class CreateCourseCategory(ModelViewSet):
    queryset = Category.objects.all()
    serializer_class = CategorySerializer
+   
+   
+class CourseQuestion(ModelViewSet):
+   queryset = Question.objects.all().select_related('user', 'course')
+   serializer_class = QuestionSerializer
+
+
+class CourseQuestionReply(ModelViewSet):
+   queryset = Reply.objects.all().select_related('question', 'user')
+   serializer_class = ReplySerializer
