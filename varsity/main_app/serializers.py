@@ -82,48 +82,48 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
       instructor.save()  # Save student data after setting password
       return instructor
 
-
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-   username_field = MainUser.EMAIL_FIELD
+   username_field = MainUser.USERNAME_FIELD
 
    @classmethod
    def get_token(cls, user):
       token = super().get_token(user)
+      token['email'] = user.email
       return token
-   
+
    def validate(self, attrs):
       data = super().validate(attrs)
       user = self.user
-      if user.is_student==True:
+
+      if user and user.is_authenticated:
          data['user_data'] = {
-            "id": user.id,
-            "first_name": user.full_name,
-            "email": user.email,
-            "username": user.username,
-            "is_student": user.is_student,
-               
+               "id": user.id,
+               "first_name": user.full_name,
+               "email": user.email,
+               "username": user.username,
+               "is_student": user.is_student,
          }
+
+         if not user.is_student:
+               data['user_data'].update({
+                  "is_instructor": user.is_instructor,
+                  "passport": getattr(user.passport, 'url()', lambda: None)(),
+                  "title": user.title,
+                  "contact": user.contact,
+                  "street_address": user.street_address,
+                  "city": user.city,
+                  "state": user.state,
+                  "country": user.country,
+                  "resume": getattr(user.resume, 'url()', lambda: None)(),
+                  "years_of_experience": user.years_of_experience,
+                  "linkedin_profile": user.linkedin_profile,
+                  "area_of_interest": user.area_of_interest,
+                  "about_me": user.about_me,
+               })
+
+         refresh = self.get_token(user)
+         data["refresh"] = str(refresh)
+         data["access"] = str(refresh.access_token)
+         return data
       else:
-         data['user_data'] = {
-            "id": user.id,
-            "first_name": user.full_name,
-            "email": user.email,
-            "username": user.username,
-            "is_instructor": user.is_instructor,
-            "passport": getattr(user.passport, 'url()', None),
-            "title": user.title,
-            "contact": user.contact,
-            "street_address": user.street_address,
-            "city": user.city,
-            "state": user.state,
-            "country": user.country,
-            "resume": getattr(user.resume, 'url()', None),
-            "years_of_experience": user.years_of_experience,
-            "linkedin_profile": user.linkedin_profile,
-            "area_of_interest": user.area_of_interest,
-            "about_me": user.about_me,
-         }
-      refresh = self.get_token(user)
-      data["refresh"] = str(refresh)
-      data["access"] = str(refresh.access_token)
-      return data
+         raise serializers.ValidationError("No active account found with the given credentials")

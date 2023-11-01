@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import environ
 from datetime import timedelta
+import datetime
+
 # Env Configuration
 env = environ.Env()
 env.read_env()
@@ -80,15 +82,16 @@ TEMPLATES = [
     },
 ]
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
-    'AUTH_TOKEN_CLASS': (
-        'rest_framework_simplejwt.tokens.SlidingToken',
-                        )
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 }
+
 
 WSGI_APPLICATION = 'varsity.wsgi.application'
 
@@ -138,6 +141,13 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+}
+
+JWT_AUTH = {
+    'JWT_SECRET_KEY': env("SECRET_KEY"),  # Use your project's secret key
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
