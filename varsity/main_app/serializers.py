@@ -1,6 +1,8 @@
 from rest_framework import serializers, validators
 from main_app.models import MainUser
 import re
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 class SignUpStudentSerializer(serializers.ModelSerializer):
    class Meta:
@@ -35,7 +37,7 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
    # full name,last name, email,username,years of experience,country,city,contact
    class Meta:
       model = MainUser
-      fields = ["id", "full_name", "email", "username", "password", "contact", "street_address", "city", "state", "country", "linkedin_profile", "years_of_experience", "area_of_interest", "about_me", "resume", "passport", "course_type"]
+      fields = ["id", "full_name", "email", "username", "password", "contact", "street_address", "city", "state", "country", "linkedin_profile", "years_of_experience", "area_of_interest", "about_me", "resume", "passport"]
       read_only_fields = ["id"]
       
       extra_kwargs = {
@@ -56,7 +58,6 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
             'about_me': {'required': False},
             'resume': {'required': False},
             'password': {'required': False},
-            'course_type': {'required': False}
       }
 
    def validate_password(self, value):
@@ -80,3 +81,49 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
       
       instructor.save()  # Save student data after setting password
       return instructor
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+   username_field = MainUser.EMAIL_FIELD
+
+   @classmethod
+   def get_token(cls, user):
+      token = super().get_token(user)
+      return token
+   
+   def validate(self, attrs):
+      data = super().validate(attrs)
+      user = self.user
+      if user.is_student==True:
+         data['user_data'] = {
+            "id": user.id,
+            "first_name": user.full_name,
+            "email": user.email,
+            "username": user.username,
+            "is_student": user.is_student,
+               
+         }
+      else:
+         data['user_data'] = {
+            "id": user.id,
+            "first_name": user.full_name,
+            "email": user.email,
+            "username": user.username,
+            "is_instructor": user.is_instructor,
+            "passport": getattr(user.passport, 'url()', None),
+            "title": user.title,
+            "contact": user.contact,
+            "street_address": user.street_address,
+            "city": user.city,
+            "state": user.state,
+            "country": user.country,
+            "resume": getattr(user.resume, 'url()', None),
+            "years_of_experience": user.years_of_experience,
+            "linkedin_profile": user.linkedin_profile,
+            "area_of_interest": user.area_of_interest,
+            "about_me": user.about_me,
+         }
+      refresh = self.get_token(user)
+      data["refresh"] = str(refresh)
+      data["access"] = str(refresh.access_token)
+      return data

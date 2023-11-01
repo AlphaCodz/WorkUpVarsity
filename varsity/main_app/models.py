@@ -61,7 +61,7 @@ class MainUser(AbstractUser):
    is_instructor = models.BooleanField(default=False)
    
    
-   EMAIL_FIELD = 'email'
+   EMAIL_FIELD = 'username'
    REQUIRED_FIELDS = []
    
    def __str__(self):

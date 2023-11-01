@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import environ
-
+from datetime import timedelta
 # Env Configuration
 env = environ.Env()
 env.read_env()
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "courses",
     'cloudinary_storage',
     'cloudinary',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -122,6 +123,22 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+SIMPLE_JWT = {
+# It will work instead of the default serializer(TokenObtainPairSerializer).
+"TOKEN_OBTAIN_SERIALIZER": "main_app.serializers.MyTokenObtainPairSerializer",
+'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
