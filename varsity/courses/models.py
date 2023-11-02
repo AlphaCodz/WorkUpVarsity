@@ -3,6 +3,7 @@ from main_app.models import MainUser
 from django.contrib.postgres.fields import ArrayField
 from cloudinary_storage.storage import RawMediaCloudinaryStorage
 
+
 # Create your models here.
 
 class Course(models.Model):
@@ -27,6 +28,7 @@ class Course(models.Model):
    requirements = models.TextField()
    # expectancy = ArrayField(models.CharField(max_length=150), size=8)
    learning_materials = models.TextField()
+   what_to_gain = models.TextField(null=True)
    instructor = models.ForeignKey(MainUser, on_delete=models.DO_NOTHING, limit_choices_to={'is_instructor':True})
    # category = models.OneToOneField('Category', on_delete=models.CASCADE)
    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=10)
@@ -67,16 +69,21 @@ class Category(models.Model):
 class Topic(models.Model):
    name = models.CharField(max_length=100)
    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+   summary = models.TextField(null=True)
 
 
 class Content(models.Model):
    name = models.CharField(max_length=50, null=True)
    topic = models.ManyToManyField(Topic)
    video = models.FileField(storage=RawMediaCloudinaryStorage)
+   description = models.TextField(null=True)
+   hour = models.IntegerField(null=True)
+   minutes = models.IntegerField(null=True)
+   seconds = models.IntegerField(null=True)
    
    
 class CourseReview(models.Model):
-   course = models.ForeignKey(Course, on_delete=models.CASCADE)
+   course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="courses")
    student = models.OneToOneField(MainUser, on_delete=models.CASCADE)
    comment = models.TextField()
    rating = models.IntegerField()

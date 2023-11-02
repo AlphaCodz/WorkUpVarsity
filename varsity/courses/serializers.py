@@ -6,7 +6,6 @@ import logging
 from .models import CourseOwnership, Question, Reply
 from datetime import datetime
 
-
 class CourseReviewSerialiazer(serializers.ModelSerializer):
    class Meta:
       model = CourseReview
@@ -61,7 +60,7 @@ class TopicSerializer(serializers.ModelSerializer):
       representation = super().to_representation(instance)
       representation['course'] = {"id": instance.course.id, "name": instance.course.name}
       return representation
-      
+   
 
 class ContentSerializer(serializers.ModelSerializer):
    # topic = TopicSerializer(many=True)

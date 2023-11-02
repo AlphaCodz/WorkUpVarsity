@@ -21,5 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('workup/', include(router.urls)),  # Use include to include the router's URLs
     path('varsity/', include('main_app.urls')),
-    # path('api/v1/', include('courses.urls'))
+    path('api/v1/', include('courses.urls'))
 ]
