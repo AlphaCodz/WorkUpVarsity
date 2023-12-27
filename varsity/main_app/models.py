@@ -6,6 +6,10 @@ from cloudinary_storage.storage import RawMediaCloudinaryStorage
 
 # Create your models here.
 class MainUser(AbstractUser):
+   STUDENT_STATUS = (
+      ("Skilled", "Skilled"),
+      ("UnSkilled", "UnSkilled")
+   )
    # Student Data
    id = models.CharField(max_length=36, unique=True, primary_key=True, default=uuid.uuid4)
    full_name = models.CharField(max_length=350)
@@ -13,6 +17,7 @@ class MainUser(AbstractUser):
    password = models.CharField(max_length=200)
    username = models.CharField(unique=True, max_length=7)
    is_student = models.BooleanField(default=False)
+   status = models.CharField(choices=STUDENT_STATUS, max_length=9, null=True)
    
    # Instructor Data
    TITLE = (
@@ -72,3 +77,14 @@ class MainUser(AbstractUser):
          new_username = "".join(random.choices(string.ascii_lowercase + string.digits, k=7))
          self.username = new_username
       super().save(*args, **kwargs)
+      
+      
+class ShopProduct(models.Model):
+   user = models.ForeignKey(MainUser, on_delete=models.CASCADE, null=True)
+   name = models.CharField(max_length=100)
+   price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+   image = models.FileField(storage=RawMediaCloudinaryStorage, null=True)
+   
+   def __str__(self):
+      return self.name
+   

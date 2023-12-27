@@ -1,5 +1,5 @@
 from rest_framework import serializers, validators
-from main_app.models import MainUser
+from main_app.models import MainUser, ShopProduct
 import re
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 class SignUpStudentSerializer(serializers.ModelSerializer):
    class Meta:
       model = MainUser
-      fields = ["id", "full_name", "email", "username", "password"]
+      fields = ["id", "full_name", "email", "username", "status","password"]
       read_only_fields = ["id", "username"]
 
    def validate_password(self, value):
@@ -102,6 +102,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                "email": user.email,
                "username": user.username,
                "is_student": user.is_student,
+               "status": user.status
          }
 
          if not user.is_student:
@@ -127,3 +128,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
          return data
       else:
          raise serializers.ValidationError("No active account found with the given credentials")
+      
+      
+class ShopSerializers(serializers.ModelSerializer):
+   class Meta:
+      model = ShopProduct
+      fields = ['name', 'price', 'image']
