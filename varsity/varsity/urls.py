@@ -4,6 +4,7 @@ from rest_framework import routers
 from main_app.views import SignUpStudent, SignUpInstructor
 from courses.views import CreateCourse, CreateCourseContent, CreateCourseTopic, ReviewCourse, CourseOwnerShipView, CreateCourseCategory, CourseQuestion, CourseQuestionReply
 from main_app.shop.views import CreateProductView
+from courses.ebooks.views import CreateEbook
 
 router = routers.DefaultRouter() 
 router.register("signup", SignUpStudent, basename="signup-student")
@@ -17,6 +18,7 @@ router.register("add/course", CourseOwnerShipView, basename="course-ownership")
 router.register("ask/question", CourseQuestion, basename='question')
 router.register("reply", CourseQuestionReply, basename="reply")
 router.register("create/product", CreateProductView)
+router.register("create/ebook", CreateEbook, basename='ebook')
 
 
 urlpatterns = [

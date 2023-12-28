@@ -3,7 +3,7 @@ from main_app.models import MainUser
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404, Http404
 import logging
-from .models import CourseOwnership, Question, Reply
+from .models import CourseOwnership, Question, Reply, Ebook
 from datetime import datetime
 
 class CourseReviewSerialiazer(serializers.ModelSerializer):
@@ -121,4 +121,8 @@ class ReplySerializer(serializers.ModelSerializer):
       representation['user'] = instance.user.full_name
       return representation
       
-   
+
+class EbookSerializer(serializers.ModelSerializer):
+   class Meta:
+      model = Ebook
+      fields = "__all__"
