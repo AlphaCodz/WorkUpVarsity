@@ -70,9 +70,16 @@ class ContentSerializer(serializers.ModelSerializer):
       
    def to_representation(self, instance):
       representation = super().to_representation(instance)
-      representation['topic'] = [{"id": topic.id, "name": topic.name} for topic in instance.topic.all()]
+      representation['topic'] = [{"id": topic.id, "name": topic.name, "summary": topic.summary, "course": self.get_course_by_topic(topic.id)} for topic in instance.topic.all()]
       return representation
    
+   def get_course_by_topic(self, topic_id):
+      try:
+         topic = Topic.objects.get(id=topic_id)
+      except Topic.DoesNotExist:
+         raise serializers.ValidationError("Topic Does Not Exist")
+      topic_data = {"id": topic.course.id, "name": topic.course.name}
+      return topic_data
 
 class CategorySerializer(serializers.ModelSerializer):
    class Meta:
