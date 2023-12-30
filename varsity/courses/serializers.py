@@ -94,7 +94,8 @@ class CourseOwnerShipSerializer(serializers.ModelSerializer):
    
    def get_course(self, obj):
       return {"id": obj.course.id, "name": obj.course.name}
-   
+
+
 # Q & A 
 class QuestionSerializer(serializers.ModelSerializer):
    class Meta:

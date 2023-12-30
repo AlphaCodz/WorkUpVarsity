@@ -18,6 +18,7 @@ class MainUser(AbstractUser):
    username = models.CharField(unique=True, max_length=7)
    is_student = models.BooleanField(default=False)
    status = models.CharField(choices=STUDENT_STATUS, max_length=9, null=True)
+   affiliate_code = models.CharField(max_length=7, unique=True, null=True)
    
    # Instructor Data
    TITLE = (
@@ -50,7 +51,7 @@ class MainUser(AbstractUser):
       ('Digital/Affiliate Marketing', 'Digital/Affiliate Marketing'),
       ('Other', 'Other')
    )
-   
+
    title = models.CharField(max_length=4, choices=TITLE, null=True)
    contact = models.CharField(max_length=11, unique=True, null=True)
    street_address = models.CharField(max_length=20, null=True)
@@ -64,8 +65,8 @@ class MainUser(AbstractUser):
    area_of_interest = models.CharField(max_length=35, choices=AOE, null=True)
    about_me = models.TextField(null=True)
    is_instructor = models.BooleanField(default=False)
-   
-   
+
+
    USERNAME_FIELD = 'email'
    REQUIRED_FIELDS = []
    
@@ -76,9 +77,11 @@ class MainUser(AbstractUser):
       if not self.username:
          new_username = "".join(random.choices(string.ascii_lowercase + string.digits, k=7))
          self.username = new_username
+      if not self.affiliate_code:
+         self.affiliate_code = "".join(random.choices(string.ascii_lowercase + string.digits, k=7))
       super().save(*args, **kwargs)
-      
-      
+
+
 class ShopProduct(models.Model):
    user = models.ForeignKey(MainUser, on_delete=models.CASCADE, null=True)
    name = models.CharField(max_length=100)
@@ -87,4 +90,11 @@ class ShopProduct(models.Model):
    
    def __str__(self):
       return self.name
+
+
+class AffiliateAccount(models.Model):
+   user = models.ForeignKey(MainUser, on_delete=models.CASCADE)
+   balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
    
+   def __str__(self):
+      return self.user.first_name

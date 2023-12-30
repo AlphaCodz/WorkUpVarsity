@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Course, Content, Topic, CourseReview, CourseOwnership, Category, Question, Reply
 from main_app.models import MainUser
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg, Subquery, OuterRef
@@ -76,3 +77,24 @@ class MyCourse(ListAPIView):
 
    def get_instructor(self, instructor_id):
       return get_object_or_404(MainUser, id=instructor_id)
+
+
+class TopicsByCourseView(APIView):
+   def get(self, request, *args, **kwargs):
+      course_id = kwargs.get("course_id")
+
+      try:
+         # Assuming 'course_id' is a valid integer
+         course_id = int(course_id)
+         
+         # Retrieve topics for the given course ID
+         topics = Topic.objects.filter(course_id=course_id)
+
+         # Serialize the topics
+         serializer = TopicSerializer(topics, many=True)
+
+         return Response(serializer.data)
+
+      except ValueError:
+         # Handle the case where 'course_id' is not a valid integer
+         return Response({"error": "Invalid course ID"}, status=400)
