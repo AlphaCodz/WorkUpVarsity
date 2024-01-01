@@ -4,12 +4,12 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from .models import Course, Content, Topic, CourseReview, CourseOwnership, Category, Question, Reply
 from main_app.models import MainUser
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg, Subquery, OuterRef
-
+from .custom_serializers.serializers import CourseDetailSerializer
 
 # Create your views here.
 class CreateCourse(ModelViewSet):
@@ -98,3 +98,43 @@ class TopicsByCourseView(APIView):
       except ValueError:
          # Handle the case where 'course_id' is not a valid integer
          return Response({"error": "Invalid course ID"}, status=400)
+
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework import status
+# from .models import Course, Topic, Content
+# from .serializers import TopicSerializer, ContentSerializer
+
+class CourseTopicsAndContentsAPIView(APIView):
+   def get(self, request, pk, format=None):
+      try:
+         course = Course.objects.get(pk=pk)
+      except Course.DoesNotExist:
+         return Response({"error": "Course not found"}, status=status.HTTP_404_NOT_FOUND)
+
+      topics = Topic.objects.filter(course=course)
+      topic_data = []
+      for topic in topics:
+         content_data = []
+         contents = Content.objects.filter(topic=topic)
+         for content in contents:
+               content_serializer = ContentSerializer(content)
+               content_data.append(content_serializer.data)
+
+         topic_serializer = TopicSerializer(topic)
+         topic_data.append({
+               "topic": topic_serializer.data,
+               "contents": content_data
+         })
+
+      course_data = {
+         "id": course.id,
+         "name": course.name,
+         "description": course.description,
+         "requirements": course.requirements,
+         "learning_materials": course.learning_materials,
+         # ... add other fields as needed
+         "topics": topic_data
+      }
+
+      return Response(course_data, status=status.HTTP_200_OK)

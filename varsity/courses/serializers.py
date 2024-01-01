@@ -81,6 +81,7 @@ class ContentSerializer(serializers.ModelSerializer):
       topic_data = {"id": topic.course.id, "name": topic.course.name}
       return topic_data
 
+
 class CategorySerializer(serializers.ModelSerializer):
    class Meta:
       model= Category
