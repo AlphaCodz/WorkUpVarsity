@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 import random, string, uuid
 from cloudinary_storage.storage import RawMediaCloudinaryStorage
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 class MainUser(AbstractUser):
@@ -19,6 +20,7 @@ class MainUser(AbstractUser):
    is_student = models.BooleanField(default=False)
    status = models.CharField(choices=STUDENT_STATUS, max_length=9, null=True)
    affiliate_code = models.CharField(max_length=7, unique=True, null=True)
+   referred_by = models.CharField(max_length=7, null=True)
    
    # Instructor Data
    TITLE = (
@@ -80,6 +82,11 @@ class MainUser(AbstractUser):
       if not self.affiliate_code:
          self.affiliate_code = "".join(random.choices(string.ascii_lowercase + string.digits, k=7))
       super().save(*args, **kwargs)
+
+@receiver(post_save, sender=MainUser)
+def create_affiliateaccount(sender, instance, created, **kwargs):
+   if created:
+      AffiliateAccount.objects.get_or_create(user=instance)
 
 
 class ShopProduct(models.Model):

@@ -7,4 +7,3 @@ urlpatterns = [
    path("topic/<int:course_id>", TopicsByCourseView.as_view(), name='my-topics'),
    path('courses/<int:pk>/topics-contents/', CourseTopicsAndContentsAPIView.as_view(), name='course-topics-contents'),
 ]
-

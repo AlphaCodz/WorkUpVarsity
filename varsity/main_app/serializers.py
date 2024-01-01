@@ -1,14 +1,19 @@
 from rest_framework import serializers, validators
-from main_app.models import MainUser, ShopProduct
+from main_app.models import MainUser, ShopProduct, AffiliateAccount
 import re
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 class SignUpStudentSerializer(serializers.ModelSerializer):
+   password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+   referred_by = serializers.CharField(required=False)
+   affiliate_code = serializers.CharField(read_only=True)
+   
+
    class Meta:
       model = MainUser
-      fields = ["id", "full_name", "email", "username", "status","password"]
-      read_only_fields = ["id", "username"]
+      fields = ["id", "full_name", "email", "username", "affiliate_code","status", "referred_by", "password"]
+      read_only_fields = ["id", "username", "affiliate_code"]
 
    def validate_password(self, value):
       # Password Security
@@ -17,21 +22,42 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
       return value
 
    def create(self, validated_data):
-      password = validated_data.get('password')
-      
+      password = validated_data.pop('password', None)
+
       # Validate password using the validate_password method
       self.validate_password(password)
-      
+
       # Assign student to DB
       student = MainUser(**validated_data)
-      student.is_student = True #Confirm Student Status
-      
+      student.is_student = True  # Confirm Student Status
+
       # Use set_password to hash the password
       student.set_password(password)
-      
       student.save()  # Save student data after setting password
+
+      # Process affiliate code
+      referred_by = validated_data.get('referred_by')
+      print(referred_by)
+      if referred_by:
+         self.process_affiliate(referred_by)
       return student
 
+   def process_affiliate(self, code):
+      if code:
+         try:
+            user = MainUser.objects.get(affiliate_code=code)
+         except MainUser.DoesNotExist:
+            raise serializers.ValidationError("Incorrect Code", 404)
+         
+         beneficiary = user.id
+         print(beneficiary)
+         
+         # Add Bonus to Affiliate
+         account = AffiliateAccount.objects.get(user=beneficiary)
+         account.balance += 100
+         account.save()
+         print(f"{beneficiary} Paid Successfully")
+   
          
 class SignUpInstructorSerializer(serializers.ModelSerializer):
    # full name,last name, email,username,years of experience,country,city,contact

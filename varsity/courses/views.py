@@ -67,7 +67,7 @@ class MyCourse(ListAPIView):
          # Add average ratings to the course data
          for course in courses:
                course['avg_rating'] = CourseReview.objects.filter(course=course['id']).aggregate(avg_rating=Avg('rating'))['avg_rating']
-
+               
          data = {
                "courses": courses
          }
@@ -82,7 +82,6 @@ class MyCourse(ListAPIView):
 class TopicsByCourseView(APIView):
    def get(self, request, *args, **kwargs):
       course_id = kwargs.get("course_id")
-
       try:
          # Assuming 'course_id' is a valid integer
          course_id = int(course_id)
@@ -99,11 +98,6 @@ class TopicsByCourseView(APIView):
          # Handle the case where 'course_id' is not a valid integer
          return Response({"error": "Invalid course ID"}, status=400)
 
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# from rest_framework import status
-# from .models import Course, Topic, Content
-# from .serializers import TopicSerializer, ContentSerializer
 
 class CourseTopicsAndContentsAPIView(APIView):
    def get(self, request, pk, format=None):
