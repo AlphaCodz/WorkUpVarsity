@@ -2,9 +2,10 @@ from django.contrib import admin
 from django.urls import path, include  # Import include
 from rest_framework import routers
 from main_app.views import SignUpStudent, SignUpInstructor
-from courses.views import CreateCourse, CreateCourseContent, CreateCourseTopic, ReviewCourse, CourseOwnerShipView, CreateCourseCategory, CourseQuestion, CourseQuestionReply
+from courses.views import CreateCourse, CreateCourseContent, CreateCourseTopic, ReviewCourse, CreateCourseCategory, CourseQuestion, CourseQuestionReply
 from main_app.shop.views import CreateProductView
 from courses.ebooks.views import CreateEbook
+from courses.extras.views import BuyCourseView
 
 router = routers.DefaultRouter() 
 router.register("signup", SignUpStudent, basename="signup-student")
@@ -14,12 +15,12 @@ router.register("create/content", CreateCourseContent, basename="content")
 router.register("create/topic", CreateCourseTopic, basename="topic")
 router.register("review", ReviewCourse, basename="review")
 router.register("create/category", CreateCourseCategory, basename="create-category")
-router.register("add/course", CourseOwnerShipView, basename="course-ownership")
+# router.register("add/course", CourseOwnerShipView, basename="course-ownership")
 router.register("ask/question", CourseQuestion, basename='question')
 router.register("reply", CourseQuestionReply, basename="reply")
 router.register("create/product", CreateProductView)
 router.register("create/ebook", CreateEbook, basename='ebook')
-
+router.register("buy/course", BuyCourseView, basename='bought-courses')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

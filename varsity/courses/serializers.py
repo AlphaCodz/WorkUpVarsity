@@ -1,9 +1,9 @@
-from .models import Course, Category, Topic, Content, CourseReview
+from .models import Course, Category, Topic, Content, CourseReview, MyCourse
 from main_app.models import MainUser
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404, Http404
 import logging
-from .models import CourseOwnership, Question, Reply, Ebook
+from .models import Question, Reply, Ebook
 from datetime import datetime
 
 class CourseReviewSerialiazer(serializers.ModelSerializer):
@@ -88,20 +88,20 @@ class CategorySerializer(serializers.ModelSerializer):
       fields = "__all__"
 
 
-class CourseOwnerShipSerializer(serializers.ModelSerializer):
-   student = serializers.SerializerMethodField()
-   course = serializers.SerializerMethodField()
-   purchase_date = serializers.DateTimeField(format="%H:%M%p %Y-%m-%d")
+# class CourseOwnerShipSerializer(serializers.ModelSerializer):
+#    student = serializers.SerializerMethodField()
+#    course = serializers.SerializerMethodField()
+#    purchase_date = serializers.DateTimeField(format="%H:%M%p %Y-%m-%d")
 
-   class Meta:
-      model = CourseOwnership
-      fields = ['student', 'course', 'purchase_date', 'transaction_details']
+#    class Meta:
+#       model = CourseOwnership
+#       fields = ['student', 'course', 'purchase_date', 'transaction_details']
 
-   def get_student(self, obj):
-      return {"full_name": obj.student.full_name, "id": obj.student.id}
+#    def get_student(self, obj):
+#       return {"full_name": obj.student.full_name, "id": obj.student.id}
    
-   def get_course(self, obj):
-      return {"id": obj.course.id, "name": obj.course.name}
+#    def get_course(self, obj):
+#       return {"id": obj.course.id, "name": obj.course.name}
 
 
 # Q & A 
@@ -135,3 +135,18 @@ class EbookSerializer(serializers.ModelSerializer):
    class Meta:
       model = Ebook
       fields = "__all__"
+
+
+class BuyCourseSerializer(serializers.ModelSerializer):
+   purchased_at = serializers.DateTimeField(format="%H:%M%p %Y-%m-%d", read_only=True)
+
+   class Meta:
+      model = MyCourse
+      fields = ['user', 'course', 'purchased_at', 'paid']
+      read_only_fields = ['paid', 'purchased_at']
+      
+      
+   def to_representation(self, instance):
+      representation = super(BuyCourseSerializer, self).to_representation(instance)
+      representation['course'] = {"id": instance.course.id, "name": instance.course.name, "image": instance.course.course_thumbnail.url}
+      return representation

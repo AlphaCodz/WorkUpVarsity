@@ -93,14 +93,14 @@ class CourseReview(models.Model):
       return self.student
 
 
-class CourseOwnership(models.Model):
-   student = models.ForeignKey(MainUser, on_delete=models.CASCADE)
-   course = models.ForeignKey(Course, on_delete=models.CASCADE)
-   purchase_date = models.DateTimeField(auto_now_add=True)
-   transaction_details = models.TextField()
+# class CourseOwnership(models.Model):
+#    student = models.ForeignKey(MainUser, on_delete=models.CASCADE)
+#    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+#    purchase_date = models.DateTimeField(auto_now_add=True)
+#    transaction_details = models.TextField()
 
-   def __str__(self):
-      return f"{self.user.username} - {self.course.name} Ownership"
+#    def __str__(self):
+#       return f"{self.user.username} - {self.course.name} Ownership"
    
    
 class Question(models.Model):
@@ -128,3 +128,13 @@ class Ebook(models.Model):
    
    def __str__(self):
       return self.name
+
+
+class MyCourse(models.Model):
+   user = models.ForeignKey(MainUser, on_delete=models.CASCADE, related_name='courses')
+   course = models.ForeignKey(Course, on_delete=models.CASCADE)
+   paid = models.BooleanField(default=True)
+   purchased_at = models.DateTimeField(auto_now_add=True, null=True)
+   
+   def __str__(self):
+      return f"{self.user.first_name} | {self.course.name}"

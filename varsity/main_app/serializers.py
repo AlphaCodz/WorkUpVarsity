@@ -57,8 +57,8 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
          account.balance += 100
          account.save()
          print(f"{beneficiary} Paid Successfully")
-   
-         
+
+
 class SignUpInstructorSerializer(serializers.ModelSerializer):
    # full name,last name, email,username,years of experience,country,city,contact
    class Meta:
@@ -124,7 +124,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
       if user and user.is_authenticated:
          data['user_data'] = {
                "id": user.id,
-               "first_name": user.full_name,
+               "full_name": user.full_name,
                "email": user.email,
                "username": user.username,
                "is_student": user.is_student,

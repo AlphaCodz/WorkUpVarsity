@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from .serializers import CourseSerializers, ContentSerializer, TopicSerializer, CourseReviewSerialiazer, CourseOwnerShipSerializer, CategorySerializer, QuestionSerializer, ReplySerializer
+from .serializers import CourseSerializers, ContentSerializer, TopicSerializer, CourseReviewSerialiazer, CategorySerializer, QuestionSerializer, ReplySerializer, BuyCourseSerializer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .models import Course, Content, Topic, CourseReview, CourseOwnership, Category, Question, Reply
+from .models import (Course, Content, Topic, CourseReview, Category, Question, Reply, MyCourse)
 from main_app.models import MainUser
 from rest_framework import status, generics
 from rest_framework.views import APIView
@@ -10,6 +10,7 @@ from rest_framework.generics import ListAPIView
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg, Subquery, OuterRef
 from .custom_serializers.serializers import CourseDetailSerializer
+from .models import MyCourse
 
 # Create your views here.
 class CreateCourse(ModelViewSet):
@@ -32,9 +33,9 @@ class ReviewCourse(ModelViewSet):
    serializer_class = CourseReviewSerialiazer
    
    
-class CourseOwnerShipView(ModelViewSet):
-   queryset = CourseOwnership.objects.select_related('student', 'course')
-   serializer_class = CourseOwnerShipSerializer
+# class CourseOwnerShipView(ModelViewSet):
+#    queryset = CourseOwnership.objects.select_related('student', 'course')
+#    serializer_class = CourseOwnerShipSerializer
    
 
 class CreateCourseCategory(ModelViewSet):
@@ -127,7 +128,6 @@ class CourseTopicsAndContentsAPIView(APIView):
          "description": course.description,
          "requirements": course.requirements,
          "learning_materials": course.learning_materials,
-         # ... add other fields as needed
          "topics": topic_data
       }
 
