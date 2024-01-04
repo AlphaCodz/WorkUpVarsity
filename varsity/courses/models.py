@@ -128,3 +128,10 @@ class MyCourse(models.Model):
    
    def __str__(self):
       return f"{self.user.first_name} | {self.course.name}"
+
+
+class MyEbooks(models.Model):
+   user = models.ForeignKey(MainUser, on_delete=models.CASCADE, related_name = 'ebooks')
+   ebook = models.ForeignKey(Ebook, on_delete=models.CASCADE)
+   paid = models.BooleanField(default=True)
+   purchased_at = models.DateTimeField(auto_now_add=True)

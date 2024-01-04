@@ -3,6 +3,7 @@ from main_app.models import MainUser, ShopProduct, AffiliateAccount
 import re
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from courses.models import Course
 
 class SignUpStudentSerializer(serializers.ModelSerializer):
    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
@@ -61,9 +62,10 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
 
 class SignUpInstructorSerializer(serializers.ModelSerializer):
    # full name,last name, email,username,years of experience,country,city,contact
+   instructor_course_data = serializers.CharField(read_only=True)
    class Meta:
       model = MainUser
-      fields = ["id", "full_name", "email", "username", "password", "contact", "street_address", "city", "state", "country", "linkedin_profile", "years_of_experience", "area_of_interest", "about_me", "resume", "passport"]
+      fields = ["id", "full_name", "email", "username", "password", "contact", "street_address", "city", "state", "country", "linkedin_profile", "years_of_experience", "area_of_interest", "about_me", "resume", "passport", "instructor_course_data"]
       read_only_fields = ["id"]
       
       extra_kwargs = {
@@ -107,6 +109,27 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
       
       instructor.save()  # Save student data after setting password
       return instructor
+   
+   def to_representation(self, instance):
+      representation = super(SignUpInstructorSerializer, self).to_representation(instance)
+      representation['instructor_course_data'] = {
+         "no_of_course": self.get_instructor_course(instance.id)
+      }
+      return representation
+   
+   def get_instructor_course(self, instructor_id):
+      try:
+         verified_instructor = MainUser.objects.get(id=instructor_id)
+      except MainUser.DoesNotExist:
+         raise serializers.ValidationError("Instructor Does Not Exist", code=404)
+      
+      # Get Instructors Course Counts
+      try:
+         course_count = Course.objects.filter(instructor=verified_instructor).count()
+      except Course.DoesNotExist:
+         return []
+      
+      return course_count
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
    username_field = MainUser.USERNAME_FIELD

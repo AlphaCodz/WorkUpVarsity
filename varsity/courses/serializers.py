@@ -3,7 +3,7 @@ from main_app.models import MainUser
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404, Http404
 import logging
-from .models import Question, Reply, Ebook
+from .models import Question, Reply, Ebook, MyEbooks
 from datetime import datetime
 
 class CourseReviewSerialiazer(serializers.ModelSerializer):
@@ -133,4 +133,25 @@ class BuyCourseSerializer(serializers.ModelSerializer):
    def to_representation(self, instance):
       representation = super(BuyCourseSerializer, self).to_representation(instance)
       representation['course'] = {"id": instance.course.id, "name": instance.course.name, "image": instance.course.course_thumbnail.url}
+      return representation
+   
+   
+class BuyEbookSerializer(serializers.ModelSerializer):
+   purchased_at = serializers.DateTimeField(format="%H:%M%p %Y-%m-%d", read_only=True)
+   
+   class Meta:
+      model = MyEbooks
+      fields = ['user', 'ebook', 'purchased_at']
+      
+   def to_representation(self, instance):
+      representation = super(BuyEbookSerializer, self).to_representation(instance)
+      representation['user'] = {
+         "id": instance.user.id,
+         "full_name": instance.user.full_name
+      }
+      representation['ebook'] = {
+         "id": instance.ebook.id,
+         "name": instance.ebook.name,
+         "image": instance.ebook.image.url
+      }
       return representation
