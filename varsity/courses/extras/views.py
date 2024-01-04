@@ -1,7 +1,8 @@
-from courses.models import MyCourse
-from courses.serializers import BuyCourseSerializer
+from courses.models import MyCourse, Reply
+from courses.serializers import BuyCourseSerializer, ReplySerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import generics
+
 
 class BuyCourseView(ModelViewSet):
    queryset = MyCourse.objects.select_related("user", "course")
@@ -17,3 +18,11 @@ class MyCourses(generics.ListAPIView):
    def get_queryset(self):
       user = self.kwargs['user']
       return MyCourse.objects.filter(user=user)
+   
+   
+class ReplyByCourseView(generics.ListAPIView):
+   serializer_class = ReplySerializer
+
+   def get_queryset(self):
+      course_id = self.kwargs['course_id']
+      return Reply.objects.filter(question__course_id=course_id)

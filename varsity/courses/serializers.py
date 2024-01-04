@@ -88,22 +88,6 @@ class CategorySerializer(serializers.ModelSerializer):
       fields = "__all__"
 
 
-# class CourseOwnerShipSerializer(serializers.ModelSerializer):
-#    student = serializers.SerializerMethodField()
-#    course = serializers.SerializerMethodField()
-#    purchase_date = serializers.DateTimeField(format="%H:%M%p %Y-%m-%d")
-
-#    class Meta:
-#       model = CourseOwnership
-#       fields = ['student', 'course', 'purchase_date', 'transaction_details']
-
-#    def get_student(self, obj):
-#       return {"full_name": obj.student.full_name, "id": obj.student.id}
-   
-#    def get_course(self, obj):
-#       return {"id": obj.course.id, "name": obj.course.name}
-
-
 # Q & A 
 class QuestionSerializer(serializers.ModelSerializer):
    class Meta:
