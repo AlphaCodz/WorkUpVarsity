@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import MyCourse, TopicsByCourseView, CourseTopicsAndContentsAPIView
-from courses.extras.views import MyCourses, ReplyByCourseView
+from courses.extras.views import MyCourses, ReplyByCourseView, AdminDashboardCounts
 
 
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
    path('courses/<int:pk>/topics-contents/', CourseTopicsAndContentsAPIView.as_view(), name='course-topics-contents'),
    path('paid-courses/<str:user>', MyCourses.as_view(), name='paid'),
    path('replies/<int:course_id>/', ReplyByCourseView.as_view(), name='reply_by_course'),
+   path('dashboard/count', AdminDashboardCounts.as_view(), name='count')
 ]

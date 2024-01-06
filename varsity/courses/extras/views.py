@@ -1,7 +1,9 @@
-from courses.models import MyCourse, Reply
+from courses.models import MyCourse, Reply, Course, Ebook
 from courses.serializers import BuyCourseSerializer, ReplySerializer
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import generics
+from rest_framework import generics, views, response, status
+from main_app.models import MainUser
+
 
 
 class BuyCourseView(ModelViewSet):
@@ -26,3 +28,19 @@ class ReplyByCourseView(generics.ListAPIView):
    def get_queryset(self):
       course_id = self.kwargs['course_id']
       return Reply.objects.filter(question__course_id=course_id)
+   
+   
+class AdminDashboardCounts(views.APIView):
+   def get(self, request):
+      # Queries
+      course = Course.objects.select_related("instructor", "category")
+      ebooks = Ebook.objects.all()
+      students = MainUser.objects.filter(is_student=True)
+      
+      data = {
+         "no_of_courses": course.count(),
+         "no_of_ebooks": ebooks.count(),
+         "no_of_students": students.count()
+      }
+      
+      return response.Response(data, status=status.HTTP_200_OK)

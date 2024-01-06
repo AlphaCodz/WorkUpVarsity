@@ -9,11 +9,12 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
    referred_by = serializers.CharField(required=False)
    affiliate_code = serializers.CharField(read_only=True)
+   affiliate_balance = serializers.CharField(read_only=True)
    
 
    class Meta:
       model = MainUser
-      fields = ["id", "full_name", "email", "username", "affiliate_code","status", "referred_by", "password"]
+      fields = ["id", "full_name", "email", "username", "affiliate_code","status", "referred_by", "password", "affiliate_balance"]
       read_only_fields = ["id", "username", "affiliate_code"]
 
    def validate_password(self, value):
@@ -59,7 +60,18 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
          account.save()
          print(f"{beneficiary} Paid Successfully")
 
+   def to_representation(self, instance):
+      representation = super(SignUpStudentSerializer, self).to_representation(instance)
+      representation["affiliate_balance"] = self.get_balance(instance.pk)
+      return representation
 
+   def get_balance(self, user_id):
+      try:
+         affiliate = AffiliateAccount.objects.get(user=user_id)
+      except AffiliateAccount.DoesNotExist:
+         return 0.00
+      return affiliate.balance
+   
 class SignUpInstructorSerializer(serializers.ModelSerializer):
    # full name,last name, email,username,years of experience,country,city,contact
    instructor_course_data = serializers.CharField(read_only=True)
@@ -131,6 +143,7 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
       
       return course_count
 
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
    username_field = MainUser.USERNAME_FIELD
 
@@ -177,9 +190,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
          return data
       else:
          raise serializers.ValidationError("No active account found with the given credentials")
-      
-      
+
+
 class ShopSerializers(serializers.ModelSerializer):
    class Meta:
       model = ShopProduct
-      fields = ['name', 'price', 'image']
+      fields = ['id', 'name', 'price', 'image']
