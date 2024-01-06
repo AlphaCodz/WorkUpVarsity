@@ -114,6 +114,7 @@ class Reply(models.Model):
 class Ebook(models.Model):
    name = models.CharField(max_length=200, unique=True)
    image = models.ImageField(upload_to='ebooks', blank=True)
+   description = models.TextField(null=True)
    price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
    
    def __str__(self):
