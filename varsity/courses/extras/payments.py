@@ -14,7 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
-
+from rest_framework.parsers import JSONParser, MultiPartParser
 
 def get_user_or_none(user_id):
    try:
@@ -31,6 +31,7 @@ def get_recipient_account(user_id):
 
 
 class MakePayment(APIView):
+   parser_classes = [JSONParser,MultiPartParser]
    @csrf_exempt
    @transaction.atomic
    def post(self, request: HttpRequest):
