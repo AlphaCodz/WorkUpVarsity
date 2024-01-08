@@ -1,5 +1,5 @@
-from courses.models import MyCourse, Reply, Course, Ebook
-from courses.serializers import BuyCourseSerializer, ReplySerializer
+from courses.models import MyCourse, Reply, Course, Ebook, Order
+from courses.serializers import BuyCourseSerializer, ReplySerializer, OrderSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import generics, views, response, status
 from main_app.models import MainUser
@@ -44,3 +44,8 @@ class AdminDashboardCounts(views.APIView):
       }
       
       return response.Response(data, status=status.HTTP_200_OK)
+   
+   
+class MakeOrder(ModelViewSet):
+   queryset = Order.objects.select_related('state', 'buyer')
+   serializer_class = OrderSerializer

@@ -5,7 +5,7 @@ from main_app.views import SignUpStudent, SignUpInstructor
 from courses.views import CreateCourse, CreateCourseContent, CreateCourseTopic, ReviewCourse, CreateCourseCategory, CourseQuestion, CourseQuestionReply
 from main_app.shop.views import CreateProductView
 from courses.ebooks.views import CreateEbook, BuyEbookView
-from courses.extras.views import BuyCourseView
+from courses.extras.views import BuyCourseView, MakeOrder
 
 router = routers.DefaultRouter() 
 router.register("signup", SignUpStudent, basename="signup-student")
@@ -23,6 +23,7 @@ router.register("create/ebook", CreateEbook, basename='ebook')
 router.register("buy/ebook", BuyEbookView, basename='bought-ebook')
 
 router.register("buy/course", BuyCourseView, basename='bought-courses')
+router.register("make-order", MakeOrder, basename='makeorders')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

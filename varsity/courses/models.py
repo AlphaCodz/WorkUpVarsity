@@ -2,8 +2,8 @@ from django.db import models
 from main_app.models import MainUser
 from django.contrib.postgres.fields import ArrayField
 from cloudinary_storage.storage import RawMediaCloudinaryStorage
-
-
+import uuid
+from django.core.exceptions import ValidationError
 # Create your models here.
 
 class Course(models.Model):
@@ -136,3 +136,26 @@ class MyEbooks(models.Model):
    ebook = models.ForeignKey(Ebook, on_delete=models.CASCADE)
    paid = models.BooleanField(default=True)
    purchased_at = models.DateTimeField(auto_now_add=True)
+   
+class State(models.Model):
+   name = models.CharField(max_length=30, unique=True)
+   delivery_fee = models.DecimalField(max_digits=12, default=0.00, decimal_places=2)
+   
+   
+class Order(models.Model):
+   id=models.CharField(max_length=36, default=uuid.uuid4, primary_key=True)
+   buyer = models.ForeignKey(MainUser, on_delete=models.CASCADE, null=True)
+   address = models.CharField(max_length=250, null=False)
+   state = models.ForeignKey(State, on_delete=models.DO_NOTHING)
+   total_price = models.DecimalField(max_digits=12, default=0.00, decimal_places=2)
+   created_at = models.DateTimeField(auto_now_add=True)
+   
+   
+class OrderItems(models.Model):
+   order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name='items')
+   items = models.ForeignKey("main_app.ShopProduct", on_delete=models.CASCADE, null=True, related_name='products')
+   quantity = models.IntegerField(default=1)
+   
+   def clean(self):
+      if self.quantity < 1:
+         raise ValidationError("Quantity Cannot be less than 1")

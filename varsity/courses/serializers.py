@@ -1,9 +1,10 @@
 from .models import Course, Category, Topic, Content, CourseReview, MyCourse
-from main_app.models import MainUser
+from main_app.models import MainUser, ShopProduct
+from main_app.serializers import ShopSerializers
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404, Http404
 import logging
-from .models import Question, Reply, Ebook, MyEbooks
+from .models import Question, Reply, Ebook, MyEbooks, Order, State, OrderItems
 from datetime import datetime
 
 class CourseReviewSerialiazer(serializers.ModelSerializer):
@@ -155,3 +156,59 @@ class BuyEbookSerializer(serializers.ModelSerializer):
          "image": instance.ebook.image.url
       }
       return representation
+   
+class StateSerializer(serializers.ModelSerializer):
+   class Meta:
+      model = State
+      fields = "__all__"
+
+class OrderItemsSerializer(serializers.ModelSerializer):
+   price = serializers.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+   items = serializers.SerializerMethodField()
+
+   class Meta:
+      model = OrderItems
+      fields = ['items', 'quantity', 'price']
+
+   def get_items(self, instance):
+      return {
+         "name": instance.items.name if instance.items else None,
+         "price": instance.items.price if instance.items else None
+      }
+
+   def to_representation(self, instance):
+      representation = super(OrderItemsSerializer, self).to_representation(instance)
+      if instance.items:
+            representation['price'] = "{:,.2f}".format(instance.items.price)
+      else:
+         representation['price'] = None
+
+      return representation
+
+
+class OrderSerializer(serializers.ModelSerializer):
+   items = OrderItemsSerializer(many=True)
+
+   class Meta:
+      model = Order
+      fields = ['id', 'buyer', 'address', 'state', 'total_price', 'created_at', 'items']
+
+   def to_representation(self, instance):
+      representation = super(OrderSerializer, self).to_representation(instance)
+      representation['buyer'] = getattr(instance.buyer, 'full_name', None)
+      representation['state'] = {
+         "id": instance.state.id,
+         "name": instance.state.name,
+         "delivery_fee": instance.state.delivery_fee
+      }
+      return representation
+
+   def create(self, validated_data):
+      items_data = validated_data.pop('items', [])
+      order = Order.objects.create(**validated_data)
+
+      # Manually create related items
+      for item_data in items_data:
+         OrderItems.objects.create(order=order, **item_data)
+
+      return order 

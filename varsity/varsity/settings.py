@@ -218,3 +218,6 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
+
+# PAYSTACK
+TEST_SECRET_KEY=env("TEST_SECRET_KEY")
