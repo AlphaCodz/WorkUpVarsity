@@ -44,7 +44,7 @@ class MakePayment(APIView):
          payment_response = self.process_payment(request)
          return payment_response
       else:
-         return Response({"message": "Invalid store owner user ID."}, status=status.HTTP_400_BAD_REQUEST)
+         return Response({"message": "Invalid User ID"}, status=status.HTTP_400_BAD_REQUEST)
 
    @transaction.atomic
    def process_payment(self, request: HttpRequest):
@@ -55,7 +55,7 @@ class MakePayment(APIView):
       }
       # Get User Data
       user = self.collect_user(request)
-      amount = self.request.data["amount"]
+      amount = self.request.data.get("amount")
       actual_amount = int(amount) * 100
 
       payload = {
