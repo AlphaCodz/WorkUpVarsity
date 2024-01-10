@@ -1,5 +1,5 @@
 import requests
-from main_app.models import MainUser, RecipientAccount, AffiliateAccount
+from main_app.models import MainUser, AffiliateAccount, RecipientHoldingAccount
 from django.http import HttpRequest
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -18,14 +18,14 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 
 def get_user_or_none(user_id):
    try:
-      return get_user_model().objects.get(id=user_id, is_instructor__in=[True, False])
+      return get_user_model().objects.get(id=user_id)
    except get_user_model().DoesNotExist:
       return None
 
 def get_recipient_account(user_id):
    try:
-      return RecipientAccount.objects.get(user=user_id)
-   except RecipientAccount.DoesNotExist:
+      return RecipientHoldingAccount.objects.get(user=user_id)
+   except RecipientHoldingAccount.DoesNotExist:
       return None
    
 
@@ -119,12 +119,12 @@ class InitiateTransfer(APIView):
       
       recipient_exists = get_recipient_account(user_id)
       
-      if user_exists and recipient_exists:
+      if user_exists or recipient_exists:
          # Process your payment logic here
          transfer_response = self.initiate_transfer(request)
          return transfer_response
       else:
-         return Response({"message": "Invalid user ID."}, status=status.HTTP_400_BAD_REQUEST)
+         return Response({"message": "User Not Found."}, status=status.HTTP_400_BAD_REQUEST)
       
    @transaction.atomic
    def initiate_transfer(self, request: HttpRequest):

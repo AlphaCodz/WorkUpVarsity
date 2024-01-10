@@ -107,12 +107,8 @@ class AffiliateAccount(models.Model):
       return self.user.first_name
    
    
-class RecipientAccount(models.Model):
+class RecipientHoldingAccount(models.Model):
    user = models.OneToOneField(MainUser, on_delete=models.CASCADE)
    account_number = models.CharField(max_length=12, unique=True)
    name = models.CharField(max_length=300, null=False)
    bank_code = models.IntegerField(null=False)
-   
-   class Meta:
-      db_table = 'main_app_recipientaccount'
-      app_label = 'main_app'
