@@ -31,22 +31,27 @@ def get_recipient_account(user_id):
 
 
 class MakePayment(APIView):
-   parser_classes = [JSONParser,MultiPartParser]
+   parser_classes = [JSONParser, MultiPartParser]
    @csrf_exempt
    @transaction.atomic
    def post(self, request: HttpRequest):
-      user_id = request.POST.get("user")
-      
+      if request.content_type == 'application/json':
+         # Handle JSON data
+         user_id = request.data.get("user")
+      else:
+         # Handle form data
+         user_id = request.POST.get("user")
+
       # VERIFY USER EXISTENCE
       user_exists = get_user_or_none(user_id)
-      
+
       if user_exists:
          # Process your payment logic here
          payment_response = self.process_payment(request)
          return payment_response
       else:
          return Response({"message": "Invalid User ID"}, status=status.HTTP_400_BAD_REQUEST)
-
+      
    @transaction.atomic
    def process_payment(self, request: HttpRequest):
       url = "https://api.paystack.co/transaction/initialize"
@@ -144,7 +149,7 @@ class InitiateTransfer(APIView):
          return Response(response_data, status=status.HTTP_200_OK)
 
       except requests.RequestException as e:
-         return Response(str(response_data.text), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+         return Response(str(response.text), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
       
       
    def collect_user(self, request: HttpRequest):
