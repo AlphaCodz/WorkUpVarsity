@@ -105,10 +105,3 @@ class AffiliateAccount(models.Model):
    
    def __str__(self):
       return self.user.first_name
-   
-   
-class RecipientHoldingAccount(models.Model):
-   user = models.OneToOneField(MainUser, on_delete=models.CASCADE, related_name='recipient')
-   account_number = models.CharField(max_length=12, unique=True)
-   name = models.CharField(max_length=300, null=False)
-   bank_code = models.IntegerField(null=False)

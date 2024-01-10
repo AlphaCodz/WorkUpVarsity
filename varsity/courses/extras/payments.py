@@ -1,5 +1,6 @@
 import requests
-from main_app.models import MainUser, AffiliateAccount, RecipientHoldingAccount
+from main_app.models import MainUser, AffiliateAccount
+from main_app.payment_model import RecipientHoldingAccount
 from django.http import HttpRequest
 from django.contrib.auth import get_user_model
 from django.conf import settings
