@@ -115,3 +115,4 @@ class RecipientAccount(models.Model):
    
    class Meta:
       db_table = 'main_app_recipientaccount'
+      app_label = 'main_app'
