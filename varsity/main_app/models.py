@@ -113,3 +113,5 @@ class RecipientAccount(models.Model):
    name = models.CharField(max_length=300, null=False)
    bank_code = models.IntegerField(null=False)
    
+   class Meta:
+      db_table = 'main_app_recipientaccount'
