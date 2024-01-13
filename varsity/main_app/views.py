@@ -14,7 +14,7 @@ class SignUpStudent(ModelViewSet):
 
 # Instructor Account Registration
 class SignUpInstructor(ModelViewSet):
-   queryset = MainUser.objects.all()
+   queryset = MainUser.objects.filter(is_instructor=True)
    serializer_class = SignUpInstructorSerializer
    permission_classes = (AllowAny, )
 
