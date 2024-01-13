@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from .serializers import CourseSerializers, ContentSerializer, TopicSerializer, CourseReviewSerialiazer, CategorySerializer, QuestionSerializer, ReplySerializer, BuyCourseSerializer
+from .serializers import CourseSerializers, ContentSerializer, TopicSerializer, CourseReviewSerialiazer, CategorySerializer, QuestionSerializer, ReplySerializer, BuyCourseSerializer, StateSerializer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .models import (Course, Content, Topic, CourseReview, Category, Question, Reply, MyCourse)
+from .models import (Course, Content, Topic, CourseReview, Category, Question, Reply, MyCourse, State)
 from main_app.models import MainUser
 from rest_framework import status, generics
 from rest_framework.views import APIView
@@ -132,3 +132,8 @@ class CourseTopicsAndContentsAPIView(APIView):
       }
 
       return Response(course_data, status=status.HTTP_200_OK)
+   
+   
+class StateView(ModelViewSet):
+   queryset = State.objects.all()
+   serializer_class = StateSerializer
