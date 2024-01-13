@@ -165,28 +165,19 @@ class StateSerializer(serializers.ModelSerializer):
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
-   # price = serializers.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-   items = serializers.SerializerMethodField()
-
+   items = serializers.PrimaryKeyRelatedField(queryset=ShopProduct.objects.all())
+   
    class Meta:
       model = OrderItems
       fields = ['items', 'quantity']
 
-   def get_items(self, instance):
-      return {
-         "name": instance.items.name if instance.items else None,
-         # "price": instance.items.price if instance.items else None
+   def to_representation(self, instance):
+      representation = super(OrderItemsSerializer, self).to_representation(instance)
+      representation['items'] = {
+         'id': getattr(instance.items, 'id', None),
+         'name': getattr(instance.items, 'name', None)
       }
-
-   # def to_representation(self, instance):
-   #    representation = super(OrderItemsSerializer, self).to_representation(instance)
-   #    if instance.items:
-   #          representation['price'] = "{:,.2f}".format(instance.items.price)
-   #    else:
-   #       representation['price'] = None
-
-   #    return representation
-
+      return representation
 
 class OrderSerializer(serializers.ModelSerializer):
    items = OrderItemsSerializer(many=True)
@@ -211,6 +202,10 @@ class OrderSerializer(serializers.ModelSerializer):
 
       # Manually create related items
       for item_data in items_data:
-         OrderItems.objects.create(order=order, **item_data)
+         item_id = item_data['items'].id  # Extract the ID from the ShopProduct instance
+         quantity = item_data['quantity']
+         shop_product = ShopProduct.objects.get(id=item_id)
+         OrderItems.objects.create(order=order, items=shop_product, quantity=quantity)
+         
+      return order
 
-      return order 
