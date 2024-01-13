@@ -19,14 +19,14 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 
 def get_user_or_none(user_id):
    try:
-      return get_user_model().objects.get(id=user_id)
+      return get_user_model().objects.get(id=user_id, is_instructor__in=[True, False])
    except get_user_model().DoesNotExist:
       return None
 
 def get_recipient_account(user_id):
    try:
-      return RecipientHoldingAccount.objects.get(user=user_id)
-   except RecipientHoldingAccount.DoesNotExist:
+      return RecipientAccount.objects.get(user=user_id)
+   except RecipientAccount.DoesNotExist:
       return None
    
 

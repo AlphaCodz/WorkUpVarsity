@@ -163,27 +163,27 @@ class StateSerializer(serializers.ModelSerializer):
       fields = "__all__"
 
 class OrderItemsSerializer(serializers.ModelSerializer):
-   price = serializers.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+   # price = serializers.DecimalField(max_digits=12, decimal_places=2, default=0.00)
    items = serializers.SerializerMethodField()
 
    class Meta:
       model = OrderItems
-      fields = ['items', 'quantity', 'price']
+      fields = ['items', 'quantity']
 
    def get_items(self, instance):
       return {
          "name": instance.items.name if instance.items else None,
-         "price": instance.items.price if instance.items else None
+         # "price": instance.items.price if instance.items else None
       }
 
-   def to_representation(self, instance):
-      representation = super(OrderItemsSerializer, self).to_representation(instance)
-      if instance.items:
-            representation['price'] = "{:,.2f}".format(instance.items.price)
-      else:
-         representation['price'] = None
+   # def to_representation(self, instance):
+   #    representation = super(OrderItemsSerializer, self).to_representation(instance)
+   #    if instance.items:
+   #          representation['price'] = "{:,.2f}".format(instance.items.price)
+   #    else:
+   #       representation['price'] = None
 
-      return representation
+   #    return representation
 
 
 class OrderSerializer(serializers.ModelSerializer):
