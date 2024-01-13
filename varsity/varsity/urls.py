@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include  # Import include
 from rest_framework import routers
-from main_app.views import SignUpStudent, SignUpInstructor
+from main_app.views import SignUpStudent, SignUpInstructor, CreateHoldingAccount
 from courses.views import CreateCourse, CreateCourseContent, CreateCourseTopic, ReviewCourse, CreateCourseCategory, CourseQuestion, CourseQuestionReply
 from main_app.shop.views import CreateProductView
 from courses.ebooks.views import CreateEbook, BuyEbookView
@@ -24,6 +24,8 @@ router.register("buy/ebook", BuyEbookView, basename='bought-ebook')
 
 router.register("buy/course", BuyCourseView, basename='bought-courses')
 router.register("make-order", MakeOrder, basename='makeorders')
+
+router.register("bank/account", CreateHoldingAccount, basename='holding-account')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

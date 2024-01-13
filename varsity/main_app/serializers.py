@@ -4,6 +4,7 @@ import re
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from courses.models import Course
+from main_app.payment_model import RecipientHoldingAccount
 
 class SignUpStudentSerializer(serializers.ModelSerializer):
    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
@@ -196,3 +197,10 @@ class ShopSerializers(serializers.ModelSerializer):
    class Meta:
       model = ShopProduct
       fields = ['id', 'name', 'price', 'image']
+      
+
+class RecipientHoldingAccountSerializer(serializers.ModelSerializer):
+   class Meta:
+      model = RecipientHoldingAccount
+      fields = ['id', 'user', 'account_number', 'name', 'bank_code']
+   
