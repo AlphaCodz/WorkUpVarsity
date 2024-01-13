@@ -156,11 +156,13 @@ class BuyEbookSerializer(serializers.ModelSerializer):
          "image": instance.ebook.image.url
       }
       return representation
-   
+
+
 class StateSerializer(serializers.ModelSerializer):
    class Meta:
       model = State
       fields = "__all__"
+
 
 class OrderItemsSerializer(serializers.ModelSerializer):
    # price = serializers.DecimalField(max_digits=12, decimal_places=2, default=0.00)

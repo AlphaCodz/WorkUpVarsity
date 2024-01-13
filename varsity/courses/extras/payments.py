@@ -1,4 +1,5 @@
 import requests
+# from main_app.models import MainUser, AffiliateAccount
 from main_app.models import MainUser, AffiliateAccount
 from main_app.payment_model import RecipientHoldingAccount
 from django.http import HttpRequest
@@ -25,8 +26,8 @@ def get_user_or_none(user_id):
 
 def get_recipient_account(user_id):
    try:
-      return RecipientAccount.objects.get(user=user_id)
-   except RecipientAccount.DoesNotExist:
+      return RecipientHoldingAccount.objects.get(user=user_id)
+   except RecipientHoldingAccount.DoesNotExist:
       return None
    
 
@@ -145,12 +146,14 @@ class InitiateTransfer(APIView):
 
       try:
          response = requests.post(url, json=data, headers=headers)
+         response.raise_for_status()  # Add this line to raise an exception for HTTP errors
          response_data = response.json()
-
          return Response(response_data, status=status.HTTP_200_OK)
 
       except requests.RequestException as e:
-         return Response(str(response.text), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+         print("Request Exception:", e)
+         print("Response Content:", response.content)  # Print the content of the response
+         return Response({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
       
       
    def collect_user(self, request: HttpRequest):
