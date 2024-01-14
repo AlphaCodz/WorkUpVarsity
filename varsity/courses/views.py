@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Avg, Subquery, OuterRef
 from .custom_serializers.serializers import CourseDetailSerializer
 from .models import MyCourse
+from varsity import settings
 
 # Create your views here.
 class CreateCourse(ModelViewSet):
@@ -137,3 +138,11 @@ class CourseTopicsAndContentsAPIView(APIView):
 class StateView(ModelViewSet):
    queryset = State.objects.all()
    serializer_class = StateSerializer
+   
+   
+class APIKEY(APIView):
+   def get(self, request):
+      API_KEY = {
+         'test_key': settings.TEST_SECRET_KEY
+      }
+      return Response(API_KEY, status=status.HTTP_200_OK)
