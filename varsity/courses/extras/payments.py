@@ -113,50 +113,50 @@ class VerifyPayment(APIView):
 class InitiateTransfer(APIView):
    @csrf_exempt
    @transaction.atomic
-   def post(self, request: HttpRequest):
+   def post(self, request):
       user_id = request.POST.get("user")
-      
-      # VERIFY USER EXISTENCE
-      user_exists = get_user_or_none(user_id)
-      
-      recipient_exists = get_recipient_account(user_id)
-      
+      user_exists, recipient_exists = self.verify_user_existence(user_id)
+
       if user_exists or recipient_exists:
-         # Process your payment logic here
          transfer_response = self.initiate_transfer(request)
          return transfer_response
       else:
          return Response({"message": "User Not Found."}, status=status.HTTP_400_BAD_REQUEST)
-      
+
+   def verify_user_existence(self, user_id):
+      user_exists = get_user_or_none(user_id)
+      recipient_exists = get_recipient_account(user_id)
+      return user_exists, recipient_exists
+
    @transaction.atomic
-   def initiate_transfer(self, request: HttpRequest):
+   def initiate_transfer(self, request):
       url = "https://api.paystack.co/transferrecipient"
       headers = {
          'Content-Type': 'application/json',
          'Authorization': f'Bearer {settings.TEST_SECRET_KEY}'
       }
+      user = self.collect_user(request)
 
       data = {
          "type": "nuban",
-         "name": self.collect_user(request).user.full_name,
-         "account_number": int(self.collect_user(request).account_number),
-         "bank_code": int(self.collect_user(request).bank_code),
+         "name": user.user.full_name,
+         "account_number": int(user.account_number),
+         "bank_code": int(user.bank_code),
          "currency": "NGN"
       }
 
       try:
          response = requests.post(url, json=data, headers=headers)
-         response.raise_for_status()  # Add this line to raise an exception for HTTP errors
+         response.raise_for_status()
          response_data = response.json()
          return Response(response_data, status=status.HTTP_200_OK)
 
       except requests.RequestException as e:
          print("Request Exception:", e)
-         print("Response Content:", response.content)  # Print the content of the response
+         print("Response Content:", response.content)
          return Response({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-      
-      
-   def collect_user(self, request: HttpRequest):
+
+   def collect_user(self, request):
       user_id = request.data.get("user")
       user_exists = get_recipient_account(user_id)
       if user_exists:
