@@ -49,6 +49,7 @@ class CourseSerializers(serializers.ModelSerializer):
       representation = super().to_representation(instance)
       representation['category'] = {'id': instance.category.id, 'name': instance.category.name}
       representation['instructor'] = {'id': instance.instructor.id, 'name': instance.instructor.full_name}
+      representation['price'] = '{:,.2f}'.format(instance.price)
       return representation
    
    
@@ -189,6 +190,7 @@ class OrderSerializer(serializers.ModelSerializer):
    def to_representation(self, instance):
       representation = super(OrderSerializer, self).to_representation(instance)
       representation['buyer'] = getattr(instance.buyer, 'full_name', None)
+      representation['total_price'] = '{:,.2f}'.format(instance.total_price)
       representation['state'] = {
          "id": instance.state.id,
          "name": instance.state.name,

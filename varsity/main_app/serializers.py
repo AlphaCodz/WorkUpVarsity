@@ -165,6 +165,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                "email": user.email,
                "username": user.username,
                "is_student": user.is_student,
+               "affiliate_code": user.affiliate_code,
                "status": user.status
          }
 
@@ -197,6 +198,11 @@ class ShopSerializers(serializers.ModelSerializer):
    class Meta:
       model = ShopProduct
       fields = ['id', 'name', 'price', 'image']
+      
+   def to_representation(self, instance):
+      representation = super(ShopSerializers, self).to_representation(instance)
+      representation['price'] = '{:,.2f}'.format(instance.price)
+      return representation
       
 
 class RecipientHoldingAccountSerializer(serializers.ModelSerializer):
