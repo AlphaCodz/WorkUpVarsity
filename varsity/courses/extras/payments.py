@@ -141,7 +141,7 @@ class InitiateTransfer(APIView):
          "type": "nuban",
          "name": user.user.full_name,
          "account_number": int(user.account_number),
-         "bank_code": int(user.bank_code),
+         "bank_code": user.bank_code,
          "currency": "NGN"
       }
 
