@@ -210,3 +210,8 @@ class RecipientHoldingAccountSerializer(serializers.ModelSerializer):
       model = RecipientHoldingAccount
       fields = ['id', 'user', 'account_number', 'name', 'bank_code']
    
+   
+class AffiliateBalanceSerializer(serializers.ModelSerializer):
+   class Meta:
+      model = AffiliateAccount
+      fields = ['id', 'balance', 'user']

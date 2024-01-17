@@ -221,3 +221,8 @@ CORS_ALLOW_HEADERS = [
 
 # PAYSTACK
 TEST_SECRET_KEY=env("TEST_SECRET_KEY")
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 6
+}
