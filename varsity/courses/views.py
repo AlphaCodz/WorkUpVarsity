@@ -32,8 +32,8 @@ class CreateCourseTopic(ModelViewSet):
 class ReviewCourse(ModelViewSet):
    queryset = CourseReview.objects.select_related('course', 'student')
    serializer_class = CourseReviewSerialiazer
-   
-   
+
+
 # class CourseOwnerShipView(ModelViewSet):
 #    queryset = CourseOwnership.objects.select_related('student', 'course')
 #    serializer_class = CourseOwnerShipSerializer

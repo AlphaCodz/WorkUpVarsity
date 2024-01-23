@@ -81,6 +81,7 @@ class Content(models.Model):
    minutes = models.IntegerField(null=True)
    seconds = models.IntegerField(null=True)
    content_file = models.FileField(storage=RawMediaCloudinaryStorage, null=True)
+   completed = models.BooleanField(default=False)
    
    
 class CourseReview(models.Model):
