@@ -2,7 +2,6 @@ from django.db import models
 from main_app.models import MainUser
 from django.contrib.postgres.fields import ArrayField
 from cloudinary_storage.storage import VideoMediaCloudinaryStorage, RawMediaCloudinaryStorage
-from cloudinary_storage.validators import validate_video
 import uuid, cloudinary
 from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
