@@ -138,6 +138,7 @@ class CourseTopicsAndContentsAPIView(APIView):
 class StateView(ModelViewSet):
    queryset = State.objects.all()
    serializer_class = StateSerializer
+   pagination_class = None
    
    
 class APIKEY(APIView):
