@@ -149,6 +149,7 @@ class Ebook(models.Model):
    image = models.ImageField(upload_to='ebooks', blank=True)
    description = models.TextField(null=True)
    price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+   url = models.URLField(unique=True, null=True)
    
    def __str__(self):
       return self.name
