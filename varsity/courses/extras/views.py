@@ -47,5 +47,5 @@ class AdminDashboardCounts(views.APIView):
    
    
 class MakeOrder(ModelViewSet):
-   queryset = Order.objects.select_related('state', 'buyer')
+   queryset = Order.objects.select_related('state', 'buyer').order_by('-created_at')
    serializer_class = OrderSerializer
