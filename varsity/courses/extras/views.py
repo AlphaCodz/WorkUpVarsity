@@ -1,5 +1,5 @@
-from courses.models import MyCourse, Reply, Course, Ebook, Order
-from courses.serializers import BuyCourseSerializer, ReplySerializer, OrderSerializer
+from courses.models import MyCourse, Reply, Course, Ebook, Order, MyEbooks
+from courses.serializers import BuyCourseSerializer, ReplySerializer, OrderSerializer, BuyEbookSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import generics, views, response, status
 from main_app.models import MainUser
@@ -20,6 +20,20 @@ class MyCourses(generics.ListAPIView):
    def get_queryset(self):
       user = self.kwargs['user']
       return MyCourse.objects.filter(user=user)
+   
+   
+class BuyEbookView(ModelViewSet):
+   queryset = MyEbooks.objects.select_related('user', 'ebook').order_by('-purchased_at')
+   serializer_class = BuyEbookSerializer
+
+
+class MyEbooksView(generics.ListAPIView):
+   serializer_class = BuyEbookSerializer
+   
+   def get_queryset(self):
+      user = self.kwargs['user']
+      return MyEbooks.objects.select_related('user', 'ebook').filter(user=user).order_by('-purchased_at')
+   
    
    
 class ReplyByCourseView(generics.ListAPIView):

@@ -140,6 +140,7 @@ class BuyCourseSerializer(serializers.ModelSerializer):
    
 class BuyEbookSerializer(serializers.ModelSerializer):
    purchased_at = serializers.DateTimeField(format="%H:%M%p %Y-%m-%d", read_only=True)
+   # url = serializers.URLField()
    
    class Meta:
       model = MyEbooks
@@ -154,7 +155,8 @@ class BuyEbookSerializer(serializers.ModelSerializer):
       representation['ebook'] = {
          "id": instance.ebook.id,
          "name": instance.ebook.name,
-         "image": instance.ebook.image.url
+         "image": instance.ebook.image.url,
+         "url": getattr(instance.ebook, 'url', None)
       }
       return representation
 

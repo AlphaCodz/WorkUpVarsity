@@ -5,7 +5,7 @@ from main_app.views import SignUpStudent, SignUpInstructor, CreateHoldingAccount
 from courses.views import CreateCourse, CreateCourseContent, CreateCourseTopic, ReviewCourse, CreateCourseCategory, CourseQuestion, CourseQuestionReply, StateView
 from main_app.shop.views import CreateProductView
 from courses.ebooks.views import CreateEbook, BuyEbookView
-from courses.extras.views import BuyCourseView, MakeOrder
+from courses.extras.views import BuyCourseView, MakeOrder, BuyEbookView
 
 router = routers.DefaultRouter() 
 router.register("signup", SignUpStudent, basename="signup-student")
@@ -30,6 +30,8 @@ router.register("bank/account", CreateHoldingAccount, basename='holding-account'
 router.register("process/state", StateView, basename='state')
 
 router.register("referees", MyReferredUsersView, basename='referee')
+
+# router.register('ebooks', BuyEbookView, basename='ebooks')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

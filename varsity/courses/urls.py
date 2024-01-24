@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import MyCourse, TopicsByCourseView, CourseTopicsAndContentsAPIView, APIKEY
-from courses.extras.views import MyCourses, ReplyByCourseView, AdminDashboardCounts
+from courses.extras.views import MyCourses, ReplyByCourseView, AdminDashboardCounts, MyEbooksView
 from courses.extras.payments import MakePayment, VerifyPayment, MakeTransfer, InitiateTransfer
 
 
@@ -15,5 +15,6 @@ urlpatterns = [
    path('verify/payment', VerifyPayment.as_view(), name='verify'),
    path('initiate/transfer', InitiateTransfer.as_view(), name='initiate-tranfer'),
    path('make/transfer', MakeTransfer.as_view(), name='make-transfer'),
-   path('api/key', APIKEY.as_view(), name='apikey')
+   path('api/key', APIKEY.as_view(), name='apikey'),
+   path('my-ebooks/<str:user>', MyEbooksView.as_view(), name='myebooks')
 ]
