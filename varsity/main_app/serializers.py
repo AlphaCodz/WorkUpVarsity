@@ -38,28 +38,6 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
       student.set_password(password)
       student.save()  # Save student data after setting password
 
-      # Process affiliate code
-      referred_by = validated_data.get('referred_by')
-      print(referred_by)
-      if referred_by:
-         self.process_affiliate(referred_by)
-      return student
-
-   def process_affiliate(self, code):
-      if code:
-         try:
-            user = MainUser.objects.get(affiliate_code=code)
-         except MainUser.DoesNotExist:
-            raise serializers.ValidationError("Incorrect Code", 404)
-         
-         beneficiary = user.id
-         print(beneficiary)
-         
-         # Add Bonus to Affiliate
-         account = AffiliateAccount.objects.get(user=beneficiary)
-         account.balance += 100
-         account.save()
-         print(f"{beneficiary} Paid Successfully")
 
    def to_representation(self, instance):
       representation = super(SignUpStudentSerializer, self).to_representation(instance)

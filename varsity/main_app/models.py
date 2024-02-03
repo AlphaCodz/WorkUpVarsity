@@ -87,10 +87,6 @@ class MainUser(AbstractUser):
 def create_affiliateaccount(sender, instance, created, **kwargs):
    if created:
       AffiliateAccount.objects.get_or_create(user=instance)
-      
-   # def get_affiliate(self):
-   #    affiliate = AffiliateAccount.objects.get(user=self.pk)
-   #    return affiliate.
 
 
 class ShopProduct(models.Model):

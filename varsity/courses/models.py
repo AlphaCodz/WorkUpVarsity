@@ -1,10 +1,11 @@
 from django.db import models
-from main_app.models import MainUser
+from main_app.models import MainUser, AffiliateAccount
 from django.contrib.postgres.fields import ArrayField
 from cloudinary_storage.storage import VideoMediaCloudinaryStorage, RawMediaCloudinaryStorage
 import uuid, cloudinary
 from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
+from rest_framework import response, status
 # Create your models here.
 
 class Course(models.Model):
@@ -42,6 +43,7 @@ class Course(models.Model):
    
    def __str__(self):
       return self.name
+
 
 class Category(models.Model):
    CATEGORY = (
@@ -84,37 +86,7 @@ class Content(models.Model):
    seconds = models.IntegerField(null=True)
    content_file = models.FileField(storage=RawMediaCloudinaryStorage, null=True)
    completed = models.BooleanField(default=False)
-   
-   # def chunked_upload_video(self, file_object, public_id, chunk_size=6000000, eager=None, eager_async=True, eager_notification_url=None):
-   #    # Check if the file is not empty
-   #    if file_object.size > 0:
-   #       response = cloudinary.uploader.upload(
-   #             file_object.file,
-   #             resource_type="video",
-   #             public_id=public_id,
-   #             chunk_size=chunk_size,
-   #             eager=eager,
-   #             eager_async=eager_async,
-   #             eager_notification_url=eager_notification_url
-   #       )
 
-   #       # Save Cloudinary information in your model
-   #       self.video.name = response.get('secure_url')
-   #       self.save()
-   #    else:
-   #       # Handle empty file condition as needed
-   #       print("Empty file encountered. Handle accordingly.")
-
-   # def save(self, *args, **kwargs):
-   #    # If video file is provided, initiate chunked upload
-   #    if self.video and not self.video.name.startswith('http'):
-   #       # Replace 'myfolder/mysubfolder/dog_closeup' with your desired public_id
-   #       public_id = f"myfolder/mysubfolder/{self.video.name.split('/')[-1].split('.')[0]}"
-         
-   #       # Pass the TemporaryUploadedFile directly
-   #       self.chunked_upload_video(self.video, public_id)
-
-   #    super().save(*args, **kwargs)
 
 class CourseReview(models.Model):
    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="courses")
@@ -160,9 +132,37 @@ class MyCourse(models.Model):
    course = models.ForeignKey(Course, on_delete=models.CASCADE)
    paid = models.BooleanField(default=True)
    purchased_at = models.DateTimeField(auto_now_add=True, null=True)
-   
+
    def __str__(self):
       return f"{self.user.first_name} | {self.course.name}"
+
+   def save(self, *args, **kwargs):
+      if self.course:
+         user = self.user
+         course = self.course
+         amount_earned = course.price * 0.20
+         
+         referee = self.get_referee(user)
+         
+         try:
+               affiliate = AffiliateAccount.objects.get(user=referee)
+               affiliate.balance += amount_earned
+               affiliate.save()
+         except AffiliateAccount.DoesNotExist:
+               # Handle the case where an affiliate is not found (create one, log, etc.)
+               raise ValidationError("Affiliate Account Does Not Exist")
+      super().save(*args, **kwargs)
+
+
+   def get_referee(self, user):
+      """
+      Get User's Referee if available
+      """
+      try:
+         referee = MainUser.objects.get(id=user)
+      except MainUser.DoesNotExist:
+         return response.Response("User Not Found", status=status.HTTP_404_NOT_FOUND)
+      return referee.referred_by
 
 
 class MyEbooks(models.Model):
