@@ -38,7 +38,6 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
       student.set_password(password)
       student.save()  # Save student data after setting password
 
-
    def to_representation(self, instance):
       representation = super(SignUpStudentSerializer, self).to_representation(instance)
       representation["affiliate_balance"] = self.get_balance(instance.pk)

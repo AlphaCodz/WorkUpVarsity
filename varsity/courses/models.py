@@ -2,10 +2,11 @@ from django.db import models
 from main_app.models import MainUser, AffiliateAccount
 from django.contrib.postgres.fields import ArrayField
 from cloudinary_storage.storage import VideoMediaCloudinaryStorage, RawMediaCloudinaryStorage
-import uuid, cloudinary
+import uuid, cloudinary, logging
 from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
 from rest_framework import response, status
+from decimal import Decimal
 # Create your models here.
 
 class Course(models.Model):
@@ -140,29 +141,32 @@ class MyCourse(models.Model):
       if self.course:
          user = self.user
          course = self.course
-         amount_earned = course.price * 0.20
+         amount_earned = Decimal(course.price) * Decimal('0.20')
          
          referee = self.get_referee(user)
-         
+         # print(referee)
          try:
                affiliate = AffiliateAccount.objects.get(user=referee)
                affiliate.balance += amount_earned
                affiliate.save()
          except AffiliateAccount.DoesNotExist:
                # Handle the case where an affiliate is not found (create one, log, etc.)
+               logging.error("An Error Unexpectedly Occurred: Affiliate Account")
                raise ValidationError("Affiliate Account Does Not Exist")
       super().save(*args, **kwargs)
-
 
    def get_referee(self, user):
       """
       Get User's Referee if available
       """
       try:
-         referee = MainUser.objects.get(id=user)
+         referee = MainUser.objects.get(id=user.id)
+         ref_id = referee.referred_by
+         if ref_id:
+               referee_instance = MainUser.objects.get(affiliate_code=ref_id)
+               return referee_instance
       except MainUser.DoesNotExist:
-         return response.Response("User Not Found", status=status.HTTP_404_NOT_FOUND)
-      return referee.referred_by
+         return None  # Return None when user is not found
 
 
 class MyEbooks(models.Model):
