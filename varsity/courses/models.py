@@ -79,7 +79,7 @@ class Topic(models.Model):
 class Content(models.Model):
    name = models.CharField(max_length=50, null=True)
    topic = models.ManyToManyField(Topic)
-   video = models.FileField(storage=VideoMediaCloudinaryStorage, upload_to='course-videos')
+   video = models.URLField(null=True)
    # video = CloudinaryField('video')
    description = models.TextField(null=True)
    hour = models.IntegerField(null=True)
