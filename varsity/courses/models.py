@@ -143,14 +143,12 @@ class MyCourse(models.Model):
          
          referee = self.get_referee(user)
          # print(referee)
-         try:
-               affiliate = AffiliateAccount.objects.get(user=referee)
-               affiliate.balance += amount_earned
-               affiliate.save()
-         except AffiliateAccount.DoesNotExist:
-               # Handle the case where an affiliate is not found (create one, log, etc.)
-               logging.error("An Error Unexpectedly Occurred: Affiliate Account")
-               raise ValidationError("Affiliate Account Does Not Exist")
+         if referee is not None:
+            affiliate = AffiliateAccount.objects.get(user=referee)
+            affiliate.balance += amount_earned
+            affiliate.save()
+         else:
+            pass
       super().save(*args, **kwargs)
 
    def get_referee(self, user):
