@@ -37,6 +37,7 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
       # Use set_password to hash the password
       student.set_password(password)
       student.save()  # Save student data after setting password
+      return student
 
    def to_representation(self, instance):
       representation = super(SignUpStudentSerializer, self).to_representation(instance)
@@ -49,7 +50,8 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
       except AffiliateAccount.DoesNotExist:
          return 0.00
       return affiliate.balance
-   
+
+
 class SignUpInstructorSerializer(serializers.ModelSerializer):
    # full name,last name, email,username,years of experience,country,city,contact
    instructor_course_data = serializers.CharField(read_only=True)
