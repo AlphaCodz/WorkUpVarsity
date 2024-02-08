@@ -82,9 +82,7 @@ class Content(models.Model):
    video = models.URLField(null=True)
    # video = CloudinaryField('video')
    description = models.TextField(null=True)
-   hour = models.IntegerField(null=True)
-   minutes = models.IntegerField(null=True)
-   seconds = models.IntegerField(null=True)
+   duration = models.CharField(null=True)
    content_file = models.FileField(storage=RawMediaCloudinaryStorage, null=True)
    completed = models.BooleanField(default=False)
 
