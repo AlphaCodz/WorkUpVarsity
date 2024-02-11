@@ -11,12 +11,12 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
    referred_by = serializers.CharField(required=False)
    affiliate_code = serializers.CharField(read_only=True)
    affiliate_balance = serializers.CharField(read_only=True)
-   
 
    class Meta:
       model = MainUser
-      fields = ["id", "full_name", "email", "username", "affiliate_code","status", "referred_by", "password", "affiliate_balance"]
+      fields = ["id", "full_name", "email", "username", "affiliate_code", "status", "referred_by", "password", "affiliate_balance"]
       read_only_fields = ["id", "username", "affiliate_code"]
+      extra_kwargs = {"referred_by": {"required": False}}
 
    def validate_password(self, value):
       # Password Security
