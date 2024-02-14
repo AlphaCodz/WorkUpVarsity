@@ -5,13 +5,13 @@ from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .payment_model import RecipientHoldingAccount
-from rest_framework import status
+from rest_framework import status, views
 from rest_framework.response import Response
 import logging
 
 # Create your views here.
 class SignUpStudent(ModelViewSet):
-   queryset = MainUser.objects.all()
+   queryset = MainUser.objects.all().order_by('-date_joined')
    serializer_class = SignUpStudentSerializer
    permission_classes = (AllowAny, )
 
@@ -57,5 +57,29 @@ class MyReferredUsersView(ViewSet):
       # Assuming user is already an instance of MainUser
       return user.affiliate_code
       
-         
+
+class UpdatePassword(views.APIView):
+   def post(self, request):
+      email = request.data.get("email")
+      new_password = request.data.get("new_password")
+      
+      if not email or not new_password:  # Check if email and new_password are provided
+         return Response("Email and new password are required", status=status.HTTP_400_BAD_REQUEST)
+      
+      verified_user = self.verify_user_exists(email)
+      if not verified_user:
+         return Response("Email with this account does not exist", status=status.HTTP_400_BAD_REQUEST)
+      
+      verified_user.set_password(new_password)
+      verified_user.save()
+      
+      return Response("Password Updated Successfully!", status=status.HTTP_200_OK)
+   
+   
+   def verify_user_exists(self, email):
+      try:
+         user = MainUser.objects.get(email=email)
+         return user
+      except MainUser.DoesNotExist:
+         return None
 
