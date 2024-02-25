@@ -11,12 +11,13 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
    referred_by = serializers.CharField(required=False)
    affiliate_code = serializers.CharField(read_only=True)
    affiliate_balance = serializers.CharField(read_only=True)
+   profile_image = serializers.ImageField(required=False)
 
    class Meta:
       model = MainUser
-      fields = ["id", "full_name", "email", "username", "affiliate_code", "status", "referred_by", "password", "affiliate_balance"]
+      fields = ["id", "full_name", "email", "username", "affiliate_code", "status", "referred_by", "password", "affiliate_balance", "profile_image"]
       read_only_fields = ["id", "username", "affiliate_code"]
-      extra_kwargs = {"referred_by": {"required": False}}
+      extra_kwargs = {"referred_by": {"required": False}, "profile_image": {"required": False}}
 
    def validate_password(self, value):
       # Password Security
@@ -55,6 +56,8 @@ class SignUpStudentSerializer(serializers.ModelSerializer):
 class SignUpInstructorSerializer(serializers.ModelSerializer):
    # full name,last name, email,username,years of experience,country,city,contact
    instructor_course_data = serializers.CharField(read_only=True)
+   profile_image = serializers.ImageField(required=False)
+   
    class Meta:
       model = MainUser
       fields = ["id", "full_name", "email", "username", "password", "contact", "street_address", "city", "state", "country", "linkedin_profile", "years_of_experience", "area_of_interest", "about_me", "resume", "passport", "instructor_course_data"]
@@ -78,6 +81,7 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
             'about_me': {'required': False},
             'resume': {'required': False},
             'password': {'required': False},
+            'profile_image': {'required': False}
       }
 
    def validate_password(self, value):
@@ -145,8 +149,14 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                "username": user.username,
                "is_student": user.is_student,
                "affiliate_code": user.affiliate_code,
-               "status": user.status
+               "status": user.status,
+               # "profile_image": getattr(user.profile_image, 'url', None)
          }
+         if user.profile_image:
+            data["user_data"]["profile_image"] = user.profile_image.url
+         else:
+            data["user_data"]["profile_image"] = None
+   
 
          if not user.is_student:
                data['user_data'].update({
@@ -164,6 +174,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                   "area_of_interest": user.area_of_interest,
                   "about_me": user.about_me,
                })
+         # Check if profile_image exists before accessing its URL
+         
 
          refresh = self.get_token(user)
          data["refresh"] = str(refresh)
