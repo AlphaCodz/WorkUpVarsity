@@ -15,7 +15,7 @@ from varsity import settings
 
 # Create your views here.
 class CreateCourse(ModelViewSet):
-   queryset = Course.objects.select_related('category', 'instructor')
+   queryset = Course.objects.filter(published=True).select_related('category', 'instructor')
    serializer_class = CourseSerializers
 
 
@@ -33,11 +33,6 @@ class ReviewCourse(ModelViewSet):
    queryset = CourseReview.objects.select_related('course', 'student')
    serializer_class = CourseReviewSerialiazer
 
-
-# class CourseOwnerShipView(ModelViewSet):
-#    queryset = CourseOwnership.objects.select_related('student', 'course')
-#    serializer_class = CourseOwnerShipSerializer
-   
 
 class CreateCourseCategory(ModelViewSet):
    queryset = Category.objects.all()

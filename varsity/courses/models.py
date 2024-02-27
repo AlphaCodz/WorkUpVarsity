@@ -40,6 +40,7 @@ class Course(models.Model):
    charge_status = models.CharField(choices=CHARGE_STATUS, max_length=4)
    course_thumbnail = models.ImageField()
    course_type = models.CharField(choices=TYPE, max_length=9, null=True)
+   published = models.BooleanField(default=False)
    
    def __str__(self):
       return self.name
@@ -129,7 +130,7 @@ class MyCourse(models.Model):
    course = models.ForeignKey(Course, on_delete=models.CASCADE)
    paid = models.BooleanField(default=True)
    purchased_at = models.DateTimeField(auto_now_add=True, null=True)
-   published = models.BooleanField(default=False)
+   
 
    def __str__(self):
       return f"{self.user.first_name} | {self.course.name}"

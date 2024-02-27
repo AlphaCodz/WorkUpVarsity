@@ -21,10 +21,10 @@ class CourseReviewSerialiazer(serializers.ModelSerializer):
       
 class CourseSerializers(serializers.ModelSerializer):
    ratings = CourseReviewSerialiazer(many=True, read_only=True)
-   
+   published = serializers.BooleanField(default=False, required=False)
    class Meta:
       model = Course
-      fields = ['id', 'name', 'description', 'requirements', 'learning_materials', 'instructor', 'category', 'price', 'public_course', 'q_and_a', 'charge_status', 'course_thumbnail', 'ratings', 'course_type']
+      fields = ['id', 'name', 'description', 'requirements', 'learning_materials', 'instructor', 'category', 'price', 'public_course', 'q_and_a', 'charge_status', 'course_thumbnail', 'ratings', 'course_type', "published"]
       
    def validate(self, attrs):
       category = attrs.get('category')
