@@ -33,13 +33,12 @@ class Course(models.Model):
    learning_materials = models.TextField()
    what_to_gain = models.TextField(null=True)
    instructor = models.ForeignKey(MainUser, on_delete=models.DO_NOTHING, limit_choices_to={'is_instructor':True})
-   # category = models.OneToOneField('Category', on_delete=models.CASCADE)
    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=10)
    public_course = models.BooleanField(default=False)
    category = models.ForeignKey('Category', on_delete=models.CASCADE)
    q_and_a = models.BooleanField(default=False)
    charge_status = models.CharField(choices=CHARGE_STATUS, max_length=4)
-   course_thumbnail = models.FileField(storage=RawMediaCloudinaryStorage, null=True)
+   course_thumbnail = models.ImageField()
    course_type = models.CharField(choices=TYPE, max_length=9, null=True)
    
    def __str__(self):
@@ -80,7 +79,6 @@ class Content(models.Model):
    name = models.CharField(max_length=50, null=True)
    topic = models.ManyToManyField(Topic)
    video = models.URLField(null=True)
-   # video = CloudinaryField('video')
    description = models.TextField(null=True)
    duration = models.CharField(max_length=10, null=True)
    content_file = models.FileField(storage=RawMediaCloudinaryStorage, null=True)
@@ -131,6 +129,7 @@ class MyCourse(models.Model):
    course = models.ForeignKey(Course, on_delete=models.CASCADE)
    paid = models.BooleanField(default=True)
    purchased_at = models.DateTimeField(auto_now_add=True, null=True)
+   published = models.BooleanField(default=False)
 
    def __str__(self):
       return f"{self.user.first_name} | {self.course.name}"

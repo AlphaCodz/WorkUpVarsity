@@ -7,6 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .payment_model import RecipientHoldingAccount
 from rest_framework import status, views
 from rest_framework.response import Response
+from .permissions import SuperPermission
 import logging
 
 # Create your views here.
@@ -20,7 +21,7 @@ class SignUpStudent(ModelViewSet):
 class SignUpInstructor(ModelViewSet):
    queryset = MainUser.objects.filter(is_instructor=True)
    serializer_class = SignUpInstructorSerializer
-   permission_classes = (AllowAny, )
+   # permission_classes = (SuperPermission, )
 
 
 class SignInUserView(TokenObtainPairView):

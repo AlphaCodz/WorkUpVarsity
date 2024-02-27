@@ -81,7 +81,8 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
             'about_me': {'required': False},
             'resume': {'required': False},
             'password': {'required': False},
-            'profile_image': {'required': False}
+            'profile_image': {'required': False},
+            # 'is_superuser': {'required':False}
       }
 
    def validate_password(self, value):
@@ -150,7 +151,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                "is_student": user.is_student,
                "affiliate_code": user.affiliate_code,
                "status": user.status,
-               # "profile_image": getattr(user.profile_image, 'url', None)
+               "is_superuser": user.is_superuser
          }
          if user.profile_image:
             data["user_data"]["profile_image"] = user.profile_image.url

@@ -19,6 +19,7 @@ class MainUser(AbstractUser):
    username = models.CharField(unique=True, max_length=7)
    profile_image = models.ImageField(null=True)
    is_student = models.BooleanField(default=False)
+   is_superuser = models.BooleanField(default=False)
    status = models.CharField(choices=STUDENT_STATUS, max_length=9, null=True)
    affiliate_code = models.CharField(max_length=7, unique=True, null=True)
    referred_by = models.CharField(max_length=7, null=True)
