@@ -15,7 +15,7 @@ from varsity import settings
 
 
 class CreateCourse(ModelViewSet):
-   queryset = Course.objects.filter(published=False).select_related('category', 'instructor')
+   queryset = Course.objects.filter(published=True).select_related('category', 'instructor')
    serializer_class = CourseSerializers
    filter_backends = [filters.SearchFilter]
    search_fields = ["name", "category__name"]
