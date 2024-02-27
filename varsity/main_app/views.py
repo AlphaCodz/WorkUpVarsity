@@ -21,7 +21,7 @@ class SignUpStudent(ModelViewSet):
 class SignUpInstructor(ModelViewSet):
    queryset = MainUser.objects.filter(is_instructor=True)
    serializer_class = SignUpInstructorSerializer
-   # permission_classes = (SuperPermission, )
+   permission_classes = (AllowAny, )
 
 
 class SignInUserView(TokenObtainPairView):

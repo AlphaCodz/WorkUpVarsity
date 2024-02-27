@@ -60,7 +60,7 @@ class SignUpInstructorSerializer(serializers.ModelSerializer):
    
    class Meta:
       model = MainUser
-      fields = ["id", "full_name", "email", "username", "password", "contact", "street_address", "city", "state", "country", "linkedin_profile", "years_of_experience", "area_of_interest", "about_me", "resume", "passport", "instructor_course_data"]
+      fields = ["id", "full_name", "email", "username", "password", "contact", "street_address", "city", "state", "country", "linkedin_profile", "years_of_experience", "area_of_interest", "about_me", "resume", "passport", "instructor_course_data", "profile_image"]
       read_only_fields = ["id"]
       
       extra_kwargs = {
