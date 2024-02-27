@@ -196,7 +196,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
    class Meta:
       model = Order
-      fields = ['id', 'buyer', 'address', 'state', 'total_price', 'created_at', 'items']
+      fields = ['id', 'buyer', 'address', 'state', 'contact','total_price', 'created_at', 'items']
 
    def to_representation(self, instance):
       representation = super(OrderSerializer, self).to_representation(instance)

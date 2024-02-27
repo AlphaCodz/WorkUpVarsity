@@ -180,6 +180,7 @@ class Order(models.Model):
    id=models.CharField(max_length=36, default=uuid.uuid4, primary_key=True)
    buyer = models.ForeignKey(MainUser, on_delete=models.CASCADE, null=True)
    address = models.CharField(max_length=250, null=False)
+   contact = models.CharField(max_length=15, null=True)
    state = models.ForeignKey(State, on_delete=models.DO_NOTHING)
    total_price = models.DecimalField(max_digits=12, default=0.00, decimal_places=2)
    created_at = models.DateTimeField(auto_now_add=True)

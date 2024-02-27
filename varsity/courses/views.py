@@ -20,6 +20,11 @@ class CreateCourse(ModelViewSet):
    filter_backends = [filters.SearchFilter]
    search_fields = ["name", "category__name"]
 
+class AdminViewCourses(ModelViewSet):
+   queryset = Course.objects.select_related('category', 'instructor')
+   serializer_class = CourseSerializers
+   filter_backends = [filters.SearchFilter]
+   search_fields = ["name", "category__name"]
 
 class CreateCourseContent(ModelViewSet):
    queryset = Content.objects.prefetch_related('topic')
