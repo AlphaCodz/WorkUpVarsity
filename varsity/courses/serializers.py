@@ -48,7 +48,16 @@ class CourseSerializers(serializers.ModelSerializer):
    def to_representation(self, instance):
       representation = super().to_representation(instance)
       representation['category'] = {'id': instance.category.id, 'name': instance.category.name}
-      representation['instructor'] = {'id': instance.instructor.id, 'name': instance.instructor.full_name}
+      representation['instructor'] = {'id': instance.instructor.id, 'name': instance.instructor.full_name} 
+      representation['price'] = '{:,.2f}'.format(instance.price)
+      
+      # Check if profile_image exists before accessing it
+      profile_image = getattr(instance.instructor, 'profile_image', None)
+      if profile_image:
+         representation['instructor']['profile_image'] = profile_image.url
+      else:
+         representation['instructor']['profile_image'] = None
+
       representation['price'] = '{:,.2f}'.format(instance.price)
       return representation
    

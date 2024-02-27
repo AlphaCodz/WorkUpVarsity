@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from .models import (Course, Content, Topic, CourseReview, Category, Question, Reply, MyCourse, State)
 from main_app.models import MainUser
-from rest_framework import status, generics
+from rest_framework import status, generics, filters
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from django.shortcuts import get_object_or_404
@@ -13,10 +13,12 @@ from .custom_serializers.serializers import CourseDetailSerializer
 from .models import MyCourse
 from varsity import settings
 
-# Create your views here.
+
 class CreateCourse(ModelViewSet):
-   queryset = Course.objects.filter(published=True).select_related('category', 'instructor')
+   queryset = Course.objects.filter(published=False).select_related('category', 'instructor')
    serializer_class = CourseSerializers
+   filter_backends = [filters.SearchFilter]
+   search_fields = ["name", "category__name"]
 
 
 class CreateCourseContent(ModelViewSet):
