@@ -143,7 +143,7 @@ class BuyCourseSerializer(serializers.ModelSerializer):
       
    def to_representation(self, instance):
       representation = super(BuyCourseSerializer, self).to_representation(instance)
-      representation['course'] = {"id": instance.course.id, "name": instance.course.name, "image": instance.course.course_thumbnail.url}
+      representation['course'] = {"id": instance.course.id, "name": instance.course.name, "image": instance.course.course_thumbnail}
       return representation
    
    

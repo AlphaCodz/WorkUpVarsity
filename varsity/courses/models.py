@@ -38,7 +38,7 @@ class Course(models.Model):
    category = models.ForeignKey('Category', on_delete=models.CASCADE)
    q_and_a = models.BooleanField(default=False)
    charge_status = models.CharField(choices=CHARGE_STATUS, max_length=4)
-   course_thumbnail = models.ImageField()
+   course_thumbnail = models.URLField()
    course_type = models.CharField(choices=TYPE, max_length=9, null=True)
    published = models.BooleanField(default=False)
    
