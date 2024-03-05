@@ -81,7 +81,7 @@ class Content(models.Model):
    topic = models.ManyToManyField(Topic)
    video = models.URLField(null=True)
    description = models.TextField(null=True)
-   duration = models.CharField(max_length=10, null=True)
+   # duration = models.CharField(max_length=10, null=True)
    content_file = models.URLField(null=True)
    completed = models.BooleanField(default=False)
 
