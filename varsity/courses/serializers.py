@@ -74,7 +74,7 @@ class TopicSerializer(serializers.ModelSerializer):
    
 
 class ContentSerializer(serializers.ModelSerializer):
-   # topic = TopicSerializer(many=True)
+   content_file = serializers.URLField(required=False)
    class Meta:
       model = Content
       fields = "__all__"
