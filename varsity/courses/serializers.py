@@ -78,6 +78,9 @@ class ContentSerializer(serializers.ModelSerializer):
    class Meta:
       model = Content
       fields = "__all__"
+      extra_kwargs = {
+         "content_file": {'required': False}
+      }
       
    def to_representation(self, instance):
       representation = super().to_representation(instance)
